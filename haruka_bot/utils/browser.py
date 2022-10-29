@@ -47,7 +47,7 @@ async def get_dynamic_screenshot_mobile(dynamic_id):
         viewport={"width": 360, "height": 780},
     )
     try:
-        await page.goto(url, wait_until="networkidle", timeout=10000)
+        await page.goto(url, wait_until="networkidle", timeout=15000)
         # 动态被删除或者进审核了
         if page.url == "https://m.bilibili.com/404":
             return None
