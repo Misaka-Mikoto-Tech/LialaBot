@@ -52,6 +52,7 @@ async def _(event: MessageEvent, uid: str = ArgPlainText("uid")):
         live=True,
         dynamic=True,
         at=False,
+        live_tips=''
     )
     if result:
         await add_sub.finish(f"已关注 {name}（{uid}）")
