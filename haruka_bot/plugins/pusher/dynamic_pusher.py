@@ -31,7 +31,7 @@ async def dy_sched():
     try:
         # 获取 UP 最新动态列表
         dynamics = (
-            await grpc_get_user_dynamics(uid, timeout=10, proxy=config.haruka_proxy)
+            await grpc_get_user_dynamics(uid, timeout=15, proxy=config.haruka_proxy)
         ).list
     except AioRpcError as e:
         if e.code() == StatusCode.DEADLINE_EXCEEDED:
