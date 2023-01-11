@@ -6,6 +6,8 @@ nohup go-cqhttp &
 cd /docker-data/haruka-bot
 nohup hb run &
 
+一键执行: /docker-data/start_cq_hb.sh
+
 docker start playwright-1
 安装后的文件位置:/usr/local/lib/python3.8/dist-packages/haruka_bot/plugins
 
