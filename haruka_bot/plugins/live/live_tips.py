@@ -3,7 +3,14 @@ from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.params import ArgPlainText
 
 from ...database import DB as db
-from ...utils import get_type_id, handle_uid_and_live_tips, permission_check, to_me, uid_check
+from ...utils import (
+    get_type_id,
+    handle_uid_and_live_tips,
+    on_command,
+    permission_check,
+    to_me,
+    uid_check,
+)
 
 live_tips = on_command("开播提示词", rule=to_me(), priority=5)
 live_tips.__doc__ = """开播提示词 UID:提示词（留空则恢复默认）"""
@@ -22,7 +29,7 @@ async def _(event: MessageEvent, uid: str = ArgPlainText("uid"), live_tips_str: 
         live_tips_str,
         uid=uid,
         type=event.message_type,
-        type_id=get_type_id(event),
+        type_id=await get_type_id(event),
     ):
         user = await db.get_user(uid=uid)
         assert user is not None
