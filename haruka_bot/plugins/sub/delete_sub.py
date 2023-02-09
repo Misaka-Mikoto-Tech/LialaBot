@@ -1,9 +1,15 @@
-from nonebot import on_command
 from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.params import ArgPlainText
 
 from ...database import DB as db
-from ...utils import get_type_id, handle_uid, permission_check, to_me, uid_check
+from ...utils import (
+    get_type_id,
+    handle_uid,
+    on_command,
+    permission_check,
+    to_me,
+    uid_check,
+)
 
 delete_sub = on_command("取关", aliases={"删除主播"}, rule=to_me(), priority=5)
 delete_sub.__doc__ = """取关 UID"""
@@ -21,7 +27,7 @@ async def _(event: MessageEvent, uid: str = ArgPlainText("uid")):
     name = getattr(await db.get_user(uid=uid), "name", None)
     if name:
         result = await db.delete_sub(
-            uid=uid, type=event.message_type, type_id=get_type_id(event)
+            uid=uid, type=event.message_type, type_id=await get_type_id(event)
         )
     else:
         result = False

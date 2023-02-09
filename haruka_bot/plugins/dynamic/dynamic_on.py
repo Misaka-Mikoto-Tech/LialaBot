@@ -1,9 +1,15 @@
-from nonebot import on_command
 from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.params import ArgPlainText
 
 from ...database import DB as db
-from ...utils import get_type_id, handle_uid, permission_check, to_me, uid_check
+from ...utils import (
+    get_type_id,
+    handle_uid,
+    on_command,
+    permission_check,
+    to_me,
+    uid_check,
+)
 
 dynamic_on = on_command("开启动态", rule=to_me(), priority=5)
 dynamic_on.__doc__ = """开启动态 UID"""
@@ -23,7 +29,7 @@ async def _(event: MessageEvent, uid: str = ArgPlainText("uid")):
         True,
         uid=uid,
         type=event.message_type,
-        type_id=get_type_id(event),
+        type_id=await get_type_id(event),
     ):
         user = await db.get_user(uid=uid)
         assert user is not None
