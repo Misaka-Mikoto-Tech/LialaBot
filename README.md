@@ -25,6 +25,12 @@ HarukaBot 针对不同的推送场景（粉丝群、娱乐群、直播通知群�
 
 ## [文档（点击查看）](https://haruka-bot.sk415.icu)
 
+## TODO
+- [x] 群内接收自己发送的消息
+- [ ] 可设置仅可自己控制
+- [ ] 查看指定B站用户最新动态
+- [ ] 显示开播分区
+
 ## 部分功能展示
 
 ![demo](/docs/.vuepress/public/demo.png)

@@ -25,6 +25,8 @@ from nonebot.permission import SUPERUSER, Permission
 from nonebot.rule import Rule
 from nonebot_plugin_guild_patch import ChannelDestroyedNoticeEvent, GuildMessageEvent
 
+from ..cli.custom_event import GroupMessageSentEvent
+
 from .. import config
 
 
@@ -86,7 +88,7 @@ GUILD_ADMIN: Permission = Permission(_guild_admin)
 
 
 async def permission_check(
-    bot: Bot, event: Union[GroupMessageEvent, PrivateMessageEvent, GuildMessageEvent]
+    bot: Bot, event: Union[GroupMessageEvent, GroupMessageSentEvent, PrivateMessageEvent, GuildMessageEvent]
 ):
     from ..database import DB as db
 
@@ -94,7 +96,7 @@ async def permission_check(
         if event.sub_type == "group":  # 不处理群临时会话
             raise FinishedException
         return
-    if isinstance(event, GroupMessageEvent):
+    if isinstance(event, (GroupMessageEvent, GroupMessageSentEvent)):
         if not await db.get_group_admin(event.group_id):
             return
         if await (GROUP_ADMIN | GROUP_OWNER | SUPERUSER)(bot, event):

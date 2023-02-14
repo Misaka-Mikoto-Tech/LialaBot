@@ -1,6 +1,7 @@
 import click
 
 from .utils import create_env
+from .custom_event import GroupMessageSentEvent
 
 
 @click.group()

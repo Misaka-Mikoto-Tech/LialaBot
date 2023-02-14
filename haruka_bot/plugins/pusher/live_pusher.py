@@ -37,13 +37,14 @@ async def live_sched():
             room_id = info["short_id"] if info["short_id"] else info["room_id"]
             url = "https://live.bilibili.com/" + str(room_id)
             title = info["title"]
+            area_name = f"{info['area_v2_parent_name']} - {info['area_v2_name']}"
             cover = (
                 info["cover_from_user"] if info["cover_from_user"] else info["keyframe"]
             )
             logger.info(f"检测到开播：{name}（{uid}）")
 
             live_msg = (
-                f"{name} 正在直播：\n{title}\n" + MessageSegment.image(cover) + f"\n{url}"
+                f"{name} 正在直播：\n标题：{title}\n分区：{area_name}\n" + MessageSegment.image(cover) + f"\n{url}"
             )
         else:  # 下播
             logger.info(f"检测到下播：{name}（{uid}）")
@@ -56,7 +57,7 @@ async def live_sched():
         for sets in push_list:
             real_live_msg = live_msg
             if new_status and sets.live_tips:
-                real_live_msg = f"{sets.live_tips}：\n{title}\n" + MessageSegment.image(cover) + f"\n{url}" # 自定义开播提示词
+                real_live_msg = f"{sets.live_tips}：\n标题：{title}\n分区：{area_name}\n" + MessageSegment.image(cover) + f"\n{url}" # 自定义开播提示词
             await safe_send(
                 bot_id=sets.bot_id,
                 send_type=sets.type,
