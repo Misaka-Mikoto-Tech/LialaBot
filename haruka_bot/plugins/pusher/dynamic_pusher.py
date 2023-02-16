@@ -19,16 +19,8 @@ from ...database import DB as db
 from ...database import dynamic_offset as offset
 from ...utils import get_dynamic_screenshot, safe_send, scheduler
 
-dy_sched_count:int = -1
-
 async def dy_sched():
     """动态推送"""
-    global dy_sched_count
-    dy_sched_count += 1
-    if dy_sched_count == 0: # docker 里运行时第一次会无法联网导致报错，需要等一会儿才行
-        await asyncio.sleep(20)
-        return
-
     uid = await db.next_uid("dynamic")
     if not uid:
         # 没有订阅先暂停一秒再跳过，不然会导致 CPU 占用过高

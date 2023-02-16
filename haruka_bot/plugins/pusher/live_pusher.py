@@ -18,7 +18,6 @@ class LiveStatusData:
     offline_time:float = 0
 
 all_status:Dict[int,LiveStatusData] = {} # [uid, LiveStatus]
-sched_count:int = -1
 
 def format_time_span(seconds:float)->str:
     m, s = divmod(seconds, 60)
@@ -31,11 +30,6 @@ def format_time_span(seconds:float)->str:
 
 async def live_sched():
     """直播推送"""
-    global sched_count
-    sched_count += 1
-    if sched_count == 0: # docker 里运行时第一次会无法联网导致报错，需要等一会儿才行
-        return
-
     uids = await db.get_uid_list("live")
 
     if not uids:  # 订阅为空
