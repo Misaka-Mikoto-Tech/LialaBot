@@ -22,7 +22,7 @@ all_status:Dict[int,LiveStatusData] = {} # [uid, LiveStatusData]
 def format_time_span(seconds:float)->str:
     m, s = divmod(seconds, 60)
     h, m = divmod(m, 60)
-    return f"{h}小时{m}分"
+    return f"{int(h)}小时{int(m)}分"
 
 @scheduler.scheduled_job(
     "interval", seconds=config.haruka_live_interval, id="live_sched"
