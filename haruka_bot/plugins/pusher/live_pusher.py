@@ -8,6 +8,7 @@ from ...utils import PROXIES, safe_send, scheduler
 
 from dataclasses import dataclass, astuple
 import time
+from typing import Dict
 
 @dataclass
 class LiveStatusData:
@@ -16,7 +17,7 @@ class LiveStatusData:
     online_time:float = 0
     offline_time:float = 0
 
-all_status:dict[int,LiveStatusData] = {} # [uid, LiveStatus]
+all_status:Dict[int,LiveStatusData] = {} # [uid, LiveStatus]
 
 def format_time_span(seconds:float)->str:
     m, s = divmod(seconds, 60)
