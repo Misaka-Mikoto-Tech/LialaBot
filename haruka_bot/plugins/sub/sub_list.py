@@ -24,9 +24,10 @@ async def _(event: MessageEvent, bot: Bot):
             f"直播：{'开' if sub.live else '关'}，"
             f"动态：{'开' if sub.dynamic else '关'}，"
             # TODO 私聊不显示全体
-            f"全体：{'开' if sub.at else '关'}\n"
+            f"全体：{'开' if sub.at else '关'}"
             f"{('，提示词：' + sub.live_tips) if sub.live_tips else ''}\n"
         )
+    # 大于8条时使用合并为转发消息
     if len(message.splitlines()) > 8 and isinstance(event, GroupMessageEvent):
         await bot.send_group_forward_msg(
             group_id=event.group_id,
@@ -34,7 +35,7 @@ async def _(event: MessageEvent, bot: Bot):
                 {
                     "type": "node",
                     "data": {
-                        "name": "HarukaBot",
+                        "name": "一澄Bot",
                         "uin": bot.self_id,
                         "content": message,
                     },
