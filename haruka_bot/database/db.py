@@ -172,9 +172,9 @@ class DB:
         return await cls.get_subs(uid=uid, **{func: True})
 
     @classmethod
-    async def get_sub_list(cls, type, type_id) -> List[Sub]:
+    async def get_sub_list(cls, type, type_id, bot_id) -> List[Sub]:
         """获取指定位置的推送列表"""
-        return await cls.get_subs(type=type, type_id=type_id)
+        return await cls.get_subs(type=type, type_id=type_id, bot_id=bot_id)
 
     @classmethod
     async def add_sub(cls, *, name, **kwargs) -> bool:
@@ -188,9 +188,9 @@ class DB:
         return True
 
     @classmethod
-    async def delete_sub(cls, uid, type, type_id) -> bool:
+    async def delete_sub(cls, uid, type, type_id, bot_id) -> bool:
         """删除指定订阅"""
-        if await Sub.delete(uid=uid, type=type, type_id=type_id):
+        if await Sub.delete(uid=uid, type=type, type_id=type_id, bot_id=bot_id):
             await cls.delete_user(uid=uid)
             await cls.update_uid_list()
             return True
@@ -198,10 +198,10 @@ class DB:
         return False
 
     @classmethod
-    async def delete_sub_list(cls, type, type_id):
+    async def delete_sub_list(cls, type, type_id, bot_id):
         """删除指定位置的推送列表"""
-        async for sub in Sub.get(type=type, type_id=type_id):
-            await cls.delete_sub(uid=sub.uid, type=sub.type, type_id=sub.type_id)
+        async for sub in Sub.get(type=type, type_id=type_id, bot_id=bot_id):
+            await cls.delete_sub(uid=sub.uid, type=sub.type, type_id=sub.type_id, bot_id=bot_id)
         await cls.update_uid_list()
 
     @classmethod

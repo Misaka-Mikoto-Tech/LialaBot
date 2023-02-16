@@ -96,7 +96,7 @@ async def permission_check(
         if event.sub_type == "group":  # 不处理群临时会话
             raise FinishedException
         return
-    if isinstance(event, (GroupMessageEvent, GroupMessageSentEvent)):
+    if isinstance(event, GroupMessageEvent):
         if not await db.get_group_admin(event.group_id):
             return
         if await (GROUP_ADMIN | GROUP_OWNER | SUPERUSER)(bot, event):
@@ -183,7 +183,7 @@ async def safe_send(bot_id, send_type, type_id, message, at=False):
         if e.info["msg"] == "GROUP_NOT_FOUND":
             from ..database import DB as db
 
-            await db.delete_sub_list(type="group", type_id=type_id)
+            await db.delete_sub_list(type="group", type_id=type_id, bot_id=bot_id)
             await db.delete_group(id=type_id)
             logger.error(f"推送失败，群（{type_id}）不存在，已自动清理群订阅列表")
         elif e.info["msg"] == "CHANNEL_NOT_FOUND":
@@ -191,7 +191,7 @@ async def safe_send(bot_id, send_type, type_id, message, at=False):
 
             guild = await db.get_guild(id=type_id)
             assert guild
-            await db.delete_sub_list(type="guild", type_id=type_id)
+            await db.delete_sub_list(type="guild", type_id=type_id, bot_id=bot_id)
             await db.delete_guild(id=type_id)
             logger.error(f"推送失败，频道（{guild.guild_id}|{guild.channel_id}）不存在，已自动清理频道订阅列表")
         elif e.info["msg"] == "SEND_MSG_API_ERROR":

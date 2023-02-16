@@ -17,7 +17,7 @@ class LiveStatusData:
     online_time:float = 0
     offline_time:float = 0
 
-all_status:Dict[int,LiveStatusData] = {} # [uid, LiveStatus]
+all_status:Dict[int,LiveStatusData] = {} # [uid, LiveStatusData]
 
 def format_time_span(seconds:float)->str:
     m, s = divmod(seconds, 60)
@@ -62,7 +62,7 @@ async def live_sched():
             logger.info(f"检测到开播：{name}（{uid}）")
 
             live_msg = (
-                f"{name} 正在直播\n--------------------n标题：{title}\n分区：{area_name}\n" + MessageSegment.image(cover) + f"\n{url}"
+                f"{name} 正在直播\n--------------------\n标题：{title}\n分区：{area_name}\n" + MessageSegment.image(cover) + f"\n{url}"
             )
         else:  # 下播
             status_data.offline_time = time.time()

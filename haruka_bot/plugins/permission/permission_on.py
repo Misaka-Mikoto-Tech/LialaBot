@@ -5,6 +5,8 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.permission import SUPERUSER
 from nonebot_plugin_guild_patch import GuildMessageEvent
 
+from ...cli.custom_event import GroupMessageSentEvent
+
 from ...database import DB as db
 from ...utils import GUILD_ADMIN, group_only, on_command, to_me
 
@@ -20,7 +22,7 @@ permission_on.handle()(group_only)
 
 
 @permission_on.handle()
-async def _(event: Union[GroupMessageEvent, GuildMessageEvent]):
+async def _(event: Union[GroupMessageEvent, GroupMessageSentEvent, GuildMessageEvent]):
     """开启当前群权限"""
     if isinstance(event, GuildMessageEvent):
         if await db.set_guild_permission(event.guild_id, event.channel_id, True):

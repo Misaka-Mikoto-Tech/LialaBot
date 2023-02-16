@@ -1,3 +1,4 @@
+from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.params import ArgPlainText
 
@@ -22,12 +23,12 @@ delete_sub.got("uid", prompt="请输入要取关的UID")(uid_check)
 
 
 @delete_sub.handle()
-async def _(event: MessageEvent, uid: str = ArgPlainText("uid")):
+async def _(event: MessageEvent, bot: Bot, uid: str = ArgPlainText("uid")):
     """根据 UID 删除 UP 主订阅"""
     name = getattr(await db.get_user(uid=uid), "name", None)
     if name:
         result = await db.delete_sub(
-            uid=uid, type=event.message_type, type_id=await get_type_id(event)
+            uid=uid, type=event.message_type, type_id=await get_type_id(event), bot_id=bot.self_id
         )
     else:
         result = False

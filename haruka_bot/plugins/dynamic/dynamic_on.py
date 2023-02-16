@@ -1,3 +1,4 @@
+from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.params import ArgPlainText
 
@@ -22,11 +23,12 @@ dynamic_on.got("uid", prompt="请输入要开启动态的UID")(uid_check)
 
 
 @dynamic_on.handle()
-async def _(event: MessageEvent, uid: str = ArgPlainText("uid")):
+async def _(event: MessageEvent,bot:Bot, uid: str = ArgPlainText("uid")):
     """根据 UID 开启动态"""
     if await db.set_sub(
         "dynamic",
         True,
+        bot_id=bot.self_id,
         uid=uid,
         type=event.message_type,
         type_id=await get_type_id(event),

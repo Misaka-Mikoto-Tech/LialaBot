@@ -14,8 +14,8 @@ sub_list.handle()(permission_check)
 @sub_list.handle()
 async def _(event: MessageEvent, bot: Bot):
     """发送当前位置的订阅列表"""
-    message = "关注列表（所有群/好友都是分开的）\n\n"
-    subs = await db.get_sub_list(event.message_type, await get_type_id(event))
+    message = "关注列表（所有群/好友/bot都是分开的）\n\n"
+    subs = await db.get_sub_list(event.message_type, await get_type_id(event), bot.self_id)
     for sub in subs:
         user = await db.get_user(uid=sub.uid)
         assert user is not None

@@ -32,4 +32,4 @@ logger.add(
 
 
 def run():
-    nonebot.run(app="haruka_bot.cli.bot:app", host="0.0.0.0", port=8080)
+    nonebot.run(app="haruka_bot.cli.bot:app")

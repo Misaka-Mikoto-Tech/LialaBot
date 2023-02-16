@@ -1,3 +1,4 @@
+from nonebot.adapters.onebot.v11 import Bot
 from nonebot import on_command
 from nonebot.adapters.onebot.v11.event import MessageEvent
 from nonebot.params import ArgPlainText
@@ -22,11 +23,12 @@ live_tips.handle()(handle_uid_and_live_tips)
 live_tips.got("uid", prompt="请输入要设置开播提示词的UID")(uid_check)
 
 @live_tips.handle()
-async def _(event: MessageEvent, uid: str = ArgPlainText("uid"), live_tips_str: str = ArgPlainText("live_tips")):
+async def _(event: MessageEvent, bot:Bot, uid: str = ArgPlainText("uid"), live_tips_str: str = ArgPlainText("live_tips")):
     """设置 UID 的开播提示词"""
     if await db.set_sub(
         "live_tips",
         live_tips_str,
+        bot_id=bot.self_id,
         uid=uid,
         type=event.message_type,
         type_id=await get_type_id(event),

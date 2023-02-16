@@ -1,10 +1,13 @@
 from typing import Union
 
+from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import GroupMessageEvent
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.params import ArgPlainText
 from nonebot.permission import SUPERUSER
 from nonebot_plugin_guild_patch import GuildMessageEvent
+
+from ...cli.custom_event import GroupMessageSentEvent
 
 from ... import config
 from ...database import DB as db
@@ -33,11 +36,11 @@ at_off.got("uid", prompt="请输入要关闭全体的UID")(uid_check)
 
 @at_off.handle()
 async def _(
-    event: Union[GroupMessageEvent, GuildMessageEvent], uid: str = ArgPlainText("uid")
+    event: Union[GroupMessageEvent, GroupMessageSentEvent, GuildMessageEvent], bot: Bot, uid: str = ArgPlainText("uid")
 ):
     """根据 UID 关闭全体"""
     if await db.set_sub(
-        "at", False, uid=uid, type=event.message_type, type_id=await get_type_id(event)
+        "at", False, bot_id=bot.self_id, uid=uid, type=event.message_type, type_id=await get_type_id(event)
     ):
         user = await db.get_user(uid=uid)
         assert user is not None
