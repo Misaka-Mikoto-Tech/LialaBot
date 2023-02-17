@@ -92,13 +92,13 @@ async def permission_check(
     bot: Bot,
     event: Union[GroupMessageEvent, GroupMessageSentEvent, PrivateMessageEvent, GuildMessageEvent]
 ):
+    bot_id = int(bot.self_id)
     async def check_exclusive_bot():
-        bot_id = int(bot.self_id)
         if (bot_id in config.exclusive_bots) and (event.sender.user_id != bot_id):
             await bot.send(event, "权限不足，本bot为独占模式，不允许其它用户控制")
             raise FinishedException
 
-    if event.sender.user_id == bot.self_id:
+    if event.sender.user_id == bot_id:
         # Bot 控制自己时永远有权限
         return
     from ..database import DB as db
