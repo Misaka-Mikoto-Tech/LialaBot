@@ -9,16 +9,18 @@ from nonebot_plugin_guild_patch import GuildMessageEvent
 from ...cli.custom_event import GroupMessageSentEvent
 
 from ...database import DB as db
-from ...utils import GUILD_ADMIN, group_only, on_command, to_me
+from ...utils import GUILD_ADMIN, group_only, on_command, permission_check, to_me
+from ...cli.custom_permission import BOT_SELF
 
 permission_off = on_command(
     "关闭权限",
     rule=to_me(),
-    permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN,
+    #permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN | BOT_SELF,
     priority=5,
 )
 permission_off.__doc__ = """关闭权限"""
 
+permission_off.handle()(permission_check)
 permission_off.handle()(group_only)
 
 

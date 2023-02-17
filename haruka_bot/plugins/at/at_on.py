@@ -8,6 +8,7 @@ from nonebot.permission import SUPERUSER
 from nonebot_plugin_guild_patch import GuildMessageEvent
 
 from ...cli.custom_event import GroupMessageSentEvent
+from ...cli.custom_permission import BOT_SELF
 
 from ... import config
 from ...database import DB as db
@@ -17,6 +18,7 @@ from ...utils import (
     group_only,
     handle_uid,
     on_command,
+    permission_check,
     to_me,
     uid_check,
 )
@@ -24,11 +26,12 @@ from ...utils import (
 at_on = on_command(
     "开启全体",
     rule=to_me(),
-    permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN,
+    # permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN | BOT_SELF,
     priority=5,
 )
 at_on.__doc__ = """开启全体 UID"""
 
+at_on.handle()(permission_check)
 at_on.handle()(group_only)
 at_on.handle()(handle_uid)
 at_on.got("uid", prompt="请输入要开启全体的UID")(uid_check)

@@ -8,16 +8,18 @@ from nonebot_plugin_guild_patch import GuildMessageEvent
 from ...cli.custom_event import GroupMessageSentEvent
 
 from ...database import DB as db
-from ...utils import GUILD_ADMIN, group_only, on_command, to_me
+from ...utils import GUILD_ADMIN, group_only, on_command, permission_check, to_me
+from ...cli.custom_permission import BOT_SELF
 
 permission_on = on_command(
     "开启权限",
     rule=to_me(),
-    permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN,
+    # permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN | BOT_SELF,
     priority=5,
 )
 permission_on.__doc__ = """开启权限"""
 
+permission_on.handle()(permission_check)
 permission_on.handle()(group_only)
 
 

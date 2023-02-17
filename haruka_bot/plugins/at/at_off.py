@@ -8,6 +8,7 @@ from nonebot.permission import SUPERUSER
 from nonebot_plugin_guild_patch import GuildMessageEvent
 
 from ...cli.custom_event import GroupMessageSentEvent
+from ...cli.custom_permission import BOT_SELF
 
 from ... import config
 from ...database import DB as db
@@ -17,6 +18,7 @@ from ...utils import (
     group_only,
     handle_uid,
     on_command,
+    permission_check,
     to_me,
     uid_check,
 )
@@ -24,10 +26,12 @@ from ...utils import (
 at_off = on_command(
     "关闭全体",
     rule=to_me(),
-    permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN,
+    # permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN | BOT_SELF,
     priority=5,
 )
 at_off.__doc__ = """关闭全体 UID"""
+
+at_off.handle()(permission_check)
 
 at_off.handle()(group_only)
 at_off.handle()(handle_uid)

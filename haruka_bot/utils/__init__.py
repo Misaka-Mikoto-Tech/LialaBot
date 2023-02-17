@@ -88,8 +88,19 @@ GUILD_ADMIN: Permission = Permission(_guild_admin)
 
 
 async def permission_check(
-    bot: Bot, event: Union[GroupMessageEvent, GroupMessageSentEvent, PrivateMessageEvent, GuildMessageEvent]
+    matcher:Matcher,
+    bot: Bot,
+    event: Union[GroupMessageEvent, GroupMessageSentEvent, PrivateMessageEvent, GuildMessageEvent]
 ):
+    async def check_exclusive_bot():
+        bot_id = int(bot.self_id)
+        if (bot_id in config.exclusive_bots) and (event.sender.user_id != bot_id):
+            await bot.send(event, "权限不足，本bot为独占模式，不允许其它用户控制")
+            raise FinishedException
+
+    if event.sender.user_id == bot.self_id:
+        # Bot 控制自己时永远有权限
+        return
     from ..database import DB as db
 
     if isinstance(event, PrivateMessageEvent):
@@ -97,11 +108,13 @@ async def permission_check(
             raise FinishedException
         return
     if isinstance(event, GroupMessageEvent):
+        await check_exclusive_bot()
         if not await db.get_group_admin(event.group_id):
             return
         if await (GROUP_ADMIN | GROUP_OWNER | SUPERUSER)(bot, event):
             return
     elif isinstance(event, GuildMessageEvent):
+        await check_exclusive_bot()
         if not await db.get_guild_admin(event.guild_id, event.channel_id):
             return
         if await (GUILD_ADMIN | SUPERUSER)(bot, event):

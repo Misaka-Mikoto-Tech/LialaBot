@@ -8,8 +8,7 @@ sub_list = on_command("关注列表", aliases={"主播列表"}, rule=to_me(), pr
 print(sub_list)
 sub_list.__doc__ = """关注列表"""
 
-sub_list.handle()(permission_check)
-
+# sub_list.handle()(permission_check)
 
 @sub_list.handle()
 async def _(event: MessageEvent, bot: Bot):
