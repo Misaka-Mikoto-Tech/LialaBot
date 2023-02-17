@@ -131,7 +131,7 @@ class DB:
         return True
 
     @classmethod
-    async def set_permission(cls, id, switch):
+    async def set_permission(cls, id, switch): # TODO 区分bot
         """设置指定群组权限"""
         if not await cls.add_group(id=id, admin=switch):
             await Group.update({"id": id}, admin=switch)
