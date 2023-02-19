@@ -4,9 +4,10 @@ from nonebot import on_notice
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11 import GroupDecreaseNoticeEvent
 from nonebot_plugin_guild_patch import ChannelDestroyedNoticeEvent
+from nonebot.log import logger
 
 from ..database import DB as db
-from ..utils import get_type_id
+from ..utils import get_type_id, safe_send
 
 group_decrease = on_notice(priority=5)
 
@@ -18,6 +19,15 @@ async def _(event: Union[GroupDecreaseNoticeEvent, ChannelDestroyedNoticeEvent],
         if event.self_id == event.user_id:
             await db.delete_sub_list(type="group", type_id=event.group_id, bot_id=bot.self_id)
             await db.delete_group(id=event.group_id)
+        else:
+            logger.warning(f"bot:{bot.self_id}: {event.user_id}退出群{event.group_id}")
+            await safe_send(
+                bot_id=bot.self_id,
+                send_type='group',
+                type_id=event.group_id,
+                message="呜, 有人跑了",
+                at=False,
+            )
     elif isinstance(event, ChannelDestroyedNoticeEvent):
         await db.delete_sub_list(type="guild", type_id=await get_type_id(event), bot_id=bot.self_id)
         await db.delete_guild(id=await get_type_id(event))
