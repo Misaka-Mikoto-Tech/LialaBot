@@ -87,7 +87,7 @@ class DB:
     @classmethod
     async def get_group_admin(cls, group_id, bot_id) -> bool:
         """获取指定群权限状态"""
-        group = await cls.get_group(id=group_id, bot_id=bot_id)
+        group = await cls.get_group(group_id=group_id, bot_id=bot_id)
         if not group:
             # TODO 自定义默认状态
             return True
@@ -105,7 +105,7 @@ class DB:
     @classmethod
     async def get_group_decrease_notice(cls, group_id, bot_id) -> bool:
         """获取指定群退群通知状态"""
-        group = await cls.get_group(id=group_id, bot_id=bot_id)
+        group = await cls.get_group(group_id=group_id, bot_id=bot_id)
         if not group:
             # TODO 自定义默认状态
             return True
@@ -145,14 +145,14 @@ class DB:
         if await cls.get_sub(type="group", type_id=id, bot_id=bot_id):
             # 当前群还有订阅，不能删除
             return False
-        await Group.delete(id=id, bot_id=bot_id)
+        await Group.delete(group_id=id, bot_id=bot_id)
         return True
 
     @classmethod
     async def set_permission(cls, id, bot_id, switch):
         """设置指定群组权限"""
-        if not await cls.add_group(id=id, bot_id=bot_id, admin=switch, decrease_notice=True):
-            await Group.update({"id": id,"bot_id":bot_id}, admin=switch)
+        if not await cls.add_group(group_id=id, bot_id=bot_id, admin=switch, decrease_notice=True):
+            await Group.update({"group_id": id,"bot_id":bot_id}, admin=switch)
 
     @classmethod
     async def set_guild_permission(cls, guild_id, channel_id, bot_id, switch):
@@ -167,14 +167,14 @@ class DB:
     @classmethod
     async def set_group_decrease_notice(cls, id, bot_id, switch):
         """设置指定群组退群通知"""
-        if not await cls.add_group(id=id, bot_id=bot_id, decrease_notice=switch, admin = True):
-            await Group.update({"id": id,"bot_id":bot_id}, decrease_notice=switch)
+        if not await cls.add_group(group_id=id, bot_id=bot_id):
+            await Group.update({"group_id": id,"bot_id":bot_id}, decrease_notice=switch)
 
     @classmethod
     async def set_guild_decrease_notice(cls, guild_id, channel_id, bot_id, switch):
         """设置指定频道退出通知"""
         if not await cls.add_guild(
-            guild_id=guild_id, channel_id=channel_id, bot_id=bot_id, decrease_notice=switch, admin=True
+            guild_id=guild_id, channel_id=channel_id, bot_id=bot_id
         ):
             await Guild.update(
                 {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}, decrease_notice=switch
@@ -217,7 +217,7 @@ class DB:
             return False
         await cls.add_user(uid=kwargs["uid"], name=name)
         if kwargs["type"] == "group":
-            await cls.add_group(id=kwargs["type_id"], bot_id=kwargs["bot_id"], admin=True, decrease_notice=True)
+            await cls.add_group(group_id=kwargs["type_id"], bot_id=kwargs["bot_id"], admin=True, decrease_notice=True)
         await cls.update_uid_list()
         return True
 

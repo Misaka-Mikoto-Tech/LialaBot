@@ -59,13 +59,12 @@ class User(BaseModel):
     name = CharField(max_length=20)
 
 class Group(BaseModel):
-    id = IntField()
+    group_id = IntField()
     bot_id = IntField()
     admin = BooleanField()  # default=True
     decrease_notice = BooleanField() # default=True
 
 class Guild(BaseModel):
-    id = IntField()
     bot_id = IntField()
     guild_id = TextField()
     channel_id = TextField()
