@@ -12,12 +12,15 @@ class BaseModel(Model):
         return cls.filter(**kwargs)
 
     @classmethod
-    async def add(cls, **kwargs):
-        pk_name = cls.describe()["pk_field"]["name"]
-        if pk_name == "id" and pk_name not in kwargs:
-            filters = kwargs
+    async def add(cls, q=None, **kwargs):
+        if q is None: # 没设置查询参数时尝试使用主键查询
+            pk_name = cls.describe()["pk_field"]["name"]
+            if pk_name == "id" and pk_name not in kwargs: # tortoise.未设置主键时默认主键名为id
+                filters = kwargs
+            else:
+                filters = {pk_name: kwargs[pk_name]}
         else:
-            filters = {pk_name: kwargs[pk_name]}
+            filters = q
         if await cls.get(**filters).exists():
             return False
         await cls.create(**kwargs)
@@ -42,7 +45,6 @@ class BaseModel(Model):
     class Meta:
         abstract = True
 
-
 # TODO 自定义默认权限
 class Sub(BaseModel):
     type = CharField(max_length=10)
@@ -59,17 +61,17 @@ class User(BaseModel):
     name = CharField(max_length=20)
 
 class Group(BaseModel):
-    group_id = IntField()
-    bot_id = IntField()
-    admin = BooleanField()  # default=True
-    decrease_notice = BooleanField() # default=True
+    group_id = IntField() # pk=True, tortoise 不支持复合主键，因此只能代码里不设置主键(数据库定义可以手动设置复合主键)
+    bot_id = IntField() # pk=True
+    admin = BooleanField(default=True)  # default=True
+    decrease_notice = BooleanField(default=True) # default=True
 
 class Guild(BaseModel):
-    bot_id = IntField()
-    guild_id = TextField()
-    channel_id = TextField()
-    admin = BooleanField()  # default=True
-    decrease_notice = BooleanField() # default=True
+    bot_id = IntField() # pk=True
+    guild_id = TextField() # pk=True
+    channel_id = TextField() # pk=True
+    admin = BooleanField(default=True)  # default=True
+    decrease_notice = BooleanField(default=True) # default=True
 
 
 class Version(BaseModel):

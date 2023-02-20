@@ -121,64 +121,60 @@ class DB:
         return bool(guild.decrease_notice)
 
     @classmethod
-    async def add_group(cls, **kwargs):
+    async def add_group(cls, q=None, **kwargs):
         """创建群设置"""
-        return await Group.add(**kwargs)
+        return await Group.add(q, **kwargs)
 
     @classmethod
-    async def add_guild(cls, **kwargs):
+    async def add_guild(cls, q=None, **kwargs):
         """创建频道设置"""
-        return await Guild.add(**kwargs)
+        return await Guild.add(q, **kwargs)
 
     @classmethod
-    async def delete_guild(cls, id, bot_id) -> bool:
+    async def delete_guild(cls, guild_id, bot_id) -> bool:
         """删除子频道设置"""
-        if await cls.get_sub(type="guild", type_id=id, bot_id=bot_id):
+        if await cls.get_sub(type="guild", type_id=guild_id, bot_id=bot_id):
             # 当前频道还有订阅，不能删除
             return False
-        await Guild.delete(id=id, bot_id=bot_id)
+        await Guild.delete(guild_id=guild_id, bot_id=bot_id)
         return True
 
     @classmethod
-    async def delete_group(cls, id, bot_id) -> bool:
+    async def delete_group(cls, group_id, bot_id) -> bool:
         """删除群设置"""
-        if await cls.get_sub(type="group", type_id=id, bot_id=bot_id):
+        if await cls.get_sub(type="group", type_id=group_id, bot_id=bot_id):
             # 当前群还有订阅，不能删除
             return False
-        await Group.delete(group_id=id, bot_id=bot_id)
+        await Group.delete(group_id=group_id, bot_id=bot_id)
         return True
 
     @classmethod
-    async def set_permission(cls, id, bot_id, switch):
+    async def set_group_permission(cls, group_id, bot_id, switch):
         """设置指定群组权限"""
-        if not await cls.add_group(group_id=id, bot_id=bot_id, admin=switch, decrease_notice=True):
-            await Group.update({"group_id": id,"bot_id":bot_id}, admin=switch)
+        q = {"group_id": group_id,"bot_id":bot_id}
+        if not await cls.add_group(q, **q, admin=switch):
+            await Group.update(q, admin=switch)
 
     @classmethod
     async def set_guild_permission(cls, guild_id, channel_id, bot_id, switch):
         """设置指定频道权限"""
-        if not await cls.add_guild(
-            guild_id=guild_id, channel_id=channel_id, bot_id=bot_id, admin=switch, decrease_notice=True
-        ):
-            await Guild.update(
-                {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}, admin=switch
-            )
+        q = {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}
+        if not await cls.add_guild(q, **q, admin=switch, decrease_notice=True):
+            await Guild.update(q, admin=switch)
 
     @classmethod
-    async def set_group_decrease_notice(cls, id, bot_id, switch):
+    async def set_group_decrease_notice(cls, group_id, bot_id, switch):
         """设置指定群组退群通知"""
-        if not await cls.add_group(group_id=id, bot_id=bot_id):
-            await Group.update({"group_id": id,"bot_id":bot_id}, decrease_notice=switch)
+        q = {"group_id": group_id,"bot_id":bot_id}
+        if not await cls.add_group(q, **q, admin=True, decrease_notice=switch):
+            await Group.update(q, decrease_notice=switch)
 
     @classmethod
     async def set_guild_decrease_notice(cls, guild_id, channel_id, bot_id, switch):
         """设置指定频道退出通知"""
-        if not await cls.add_guild(
-            guild_id=guild_id, channel_id=channel_id, bot_id=bot_id
-        ):
-            await Guild.update(
-                {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}, decrease_notice=switch
-            )
+        q = {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}
+        if not await cls.add_guild(q, **q, admin=True, decrease_notice=switch):
+            await Guild.update(q, decrease_notice=switch)
 
     @classmethod
     async def get_guild(cls, **kwargs):
@@ -213,11 +209,13 @@ class DB:
     @classmethod
     async def add_sub(cls, *, name, **kwargs) -> bool:
         """添加订阅"""
-        if not await Sub.add(**kwargs):
+        q = {"type":kwargs["type"], "type_id":kwargs["type_id"], "uid":kwargs["uid"], "bot_id":kwargs["bot_id"]}
+        if not await Sub.add(q, **kwargs):
             return False
         await cls.add_user(uid=kwargs["uid"], name=name)
         if kwargs["type"] == "group":
-            await cls.add_group(group_id=kwargs["type_id"], bot_id=kwargs["bot_id"], admin=True, decrease_notice=True)
+            q = {"group_id":kwargs["type_id"], "bot_id": kwargs["bot_id"]}
+            await cls.add_group(q, **q, admin=True, decrease_notice=True)
         await cls.update_uid_list()
         return True
 
@@ -288,7 +286,7 @@ class DB:
                 at=sub["at"],
             )
         for group in groups.values():
-            await cls.set_permission(group["group_id"], group["admin"])
+            await cls.set_group_permission(group["group_id"], group["admin"])
 
         json_path.rename(get_path("config.json.bak"))
         logger.info("数据库迁移完成")

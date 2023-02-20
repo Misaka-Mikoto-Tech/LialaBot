@@ -31,6 +31,6 @@ async def _(event: Union[GroupMessageEvent, GroupMessageSentEvent, GuildMessageE
         if await db.set_guild_permission(event.guild_id, event.channel_id, bot.self_id, True):
             await permission_on.finish("已开启权限，只有管理员和主人可以操作")
     else:
-        if await db.set_permission(event.group_id, bot.self_id, True):
+        if await db.set_group_permission(event.group_id, bot.self_id, True):
             await permission_on.finish("已开启权限，只有管理员和主人可以操作")
     await permission_on.finish("权限已经开启了，只有管理员和主人可以操作")
