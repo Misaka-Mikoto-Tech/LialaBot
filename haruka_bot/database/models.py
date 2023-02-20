@@ -54,22 +54,23 @@ class Sub(BaseModel):
     bot_id = IntField()
     live_tips = CharField(max_length=100)
 
-
 class User(BaseModel):
     uid = IntField(pk=True)
     name = CharField(max_length=20)
 
-
 class Group(BaseModel):
-    id = IntField(pk=True)
+    id = IntField()
+    bot_id = IntField()
     admin = BooleanField()  # default=True
-
+    decrease_notice = BooleanField() # default=True
 
 class Guild(BaseModel):
-    id = IntField(pk=True)
+    id = IntField()
+    bot_id = IntField()
     guild_id = TextField()
     channel_id = TextField()
     admin = BooleanField()  # default=True
+    decrease_notice = BooleanField() # default=True
 
 
 class Version(BaseModel):

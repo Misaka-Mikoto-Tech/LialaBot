@@ -28,9 +28,9 @@ permission_off.handle()(group_only)
 async def _(event: Union[GroupMessageEvent, GroupMessageSentEvent, GuildMessageEvent], bot:Bot):
     """关闭当前群权限"""
     if isinstance(event, GuildMessageEvent):
-        if await db.set_guild_permission(event.guild_id, event.channel_id, False):
-            await permission_off.finish("已开启权限，只有管理员和主人可以操作")
+        if await db.set_guild_permission(event.guild_id, event.channel_id, bot.self_id, False):
+            await permission_off.finish("已关闭权限，所有人均可操作")
     else:
-        if await db.set_permission(event.group_id, False):
+        if await db.set_permission(event.group_id, bot.self_id, False):
             await permission_off.finish("已关闭权限，所有人均可操作")
     await permission_off.finish("权限已经关闭了，所有人均可操作")

@@ -1,5 +1,6 @@
 from typing import Union
 
+from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import GroupMessageEvent
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.permission import SUPERUSER
@@ -24,12 +25,12 @@ permission_on.handle()(group_only)
 
 
 @permission_on.handle()
-async def _(event: Union[GroupMessageEvent, GroupMessageSentEvent, GuildMessageEvent]):
+async def _(event: Union[GroupMessageEvent, GroupMessageSentEvent, GuildMessageEvent], bot:Bot):
     """开启当前群权限"""
     if isinstance(event, GuildMessageEvent):
-        if await db.set_guild_permission(event.guild_id, event.channel_id, True):
+        if await db.set_guild_permission(event.guild_id, event.channel_id, bot.self_id, True):
             await permission_on.finish("已开启权限，只有管理员和主人可以操作")
     else:
-        if await db.set_permission(event.group_id, True):
+        if await db.set_permission(event.group_id, bot.self_id, True):
             await permission_on.finish("已开启权限，只有管理员和主人可以操作")
     await permission_on.finish("权限已经开启了，只有管理员和主人可以操作")

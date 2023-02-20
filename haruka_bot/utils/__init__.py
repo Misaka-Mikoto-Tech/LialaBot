@@ -109,13 +109,13 @@ async def permission_check(
         return
     if isinstance(event, GroupMessageEvent):
         await check_exclusive_bot()
-        if not await db.get_group_admin(event.group_id):
+        if not await db.get_group_admin(event.group_id, bot.self_id):
             return
         if await (GROUP_ADMIN | GROUP_OWNER | SUPERUSER)(bot, event):
             return
     elif isinstance(event, GuildMessageEvent):
         await check_exclusive_bot()
-        if not await db.get_guild_admin(event.guild_id, event.channel_id):
+        if not await db.get_guild_admin(event.guild_id, event.channel_id, bot.self_id):
             return
         if await (GUILD_ADMIN | SUPERUSER)(bot, event):
             return

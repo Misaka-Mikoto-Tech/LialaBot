@@ -85,22 +85,40 @@ class DB:
         return await Group.get(**kwargs).first()
 
     @classmethod
-    async def get_group_admin(cls, group_id) -> bool:
+    async def get_group_admin(cls, group_id, bot_id) -> bool:
         """获取指定群权限状态"""
-        group = await cls.get_group(id=group_id)
+        group = await cls.get_group(id=group_id, bot_id=bot_id)
         if not group:
             # TODO 自定义默认状态
             return True
         return bool(group.admin)
 
     @classmethod
-    async def get_guild_admin(cls, guild_id, channel_id) -> bool:
+    async def get_guild_admin(cls, guild_id, channel_id, bot_id) -> bool:
         """获取指定频道权限状态"""
-        guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id)
+        guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
         if not guild:
             # TODO 自定义默认状态
             return True
         return bool(guild.admin)
+
+    @classmethod
+    async def get_group_decrease_notice(cls, group_id, bot_id) -> bool:
+        """获取指定群退群通知状态"""
+        group = await cls.get_group(id=group_id, bot_id=bot_id)
+        if not group:
+            # TODO 自定义默认状态
+            return True
+        return bool(group.decrease_notice)
+
+    @classmethod
+    async def get_guild_decrease_notice(cls, guild_id, channel_id, bot_id) -> bool:
+        """获取指定频道退出通知状态"""
+        guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
+        if not guild:
+            # TODO 自定义默认状态
+            return True
+        return bool(guild.decrease_notice)
 
     @classmethod
     async def add_group(cls, **kwargs):
@@ -113,37 +131,53 @@ class DB:
         return await Guild.add(**kwargs)
 
     @classmethod
-    async def delete_guild(cls, id) -> bool:
+    async def delete_guild(cls, id, bot_id) -> bool:
         """删除子频道设置"""
-        if await cls.get_sub(type="guild", type_id=id):
+        if await cls.get_sub(type="guild", type_id=id, bot_id=bot_id):
             # 当前频道还有订阅，不能删除
             return False
-        await Guild.delete(id=id)
+        await Guild.delete(id=id, bot_id=bot_id)
         return True
 
     @classmethod
-    async def delete_group(cls, id) -> bool:
+    async def delete_group(cls, id, bot_id) -> bool:
         """删除群设置"""
-        if await cls.get_sub(type="group", type_id=id):
+        if await cls.get_sub(type="group", type_id=id, bot_id=bot_id):
             # 当前群还有订阅，不能删除
             return False
-        await Group.delete(id=id)
+        await Group.delete(id=id, bot_id=bot_id)
         return True
 
     @classmethod
-    async def set_permission(cls, id, switch): # TODO 区分bot
+    async def set_permission(cls, id, bot_id, switch):
         """设置指定群组权限"""
-        if not await cls.add_group(id=id, admin=switch):
-            await Group.update({"id": id}, admin=switch)
+        if not await cls.add_group(id=id, bot_id=bot_id, admin=switch, decrease_notice=True):
+            await Group.update({"id": id,"bot_id":bot_id}, admin=switch)
 
     @classmethod
-    async def set_guild_permission(cls, guild_id, channel_id, switch):
+    async def set_guild_permission(cls, guild_id, channel_id, bot_id, switch):
         """设置指定频道权限"""
         if not await cls.add_guild(
-            guild_id=guild_id, channel_id=channel_id, admin=switch
+            guild_id=guild_id, channel_id=channel_id, bot_id=bot_id, admin=switch, decrease_notice=True
         ):
             await Guild.update(
-                {"guild_id": guild_id, "channel_id": channel_id}, admin=switch
+                {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}, admin=switch
+            )
+
+    @classmethod
+    async def set_group_decrease_notice(cls, id, bot_id, switch):
+        """设置指定群组退群通知"""
+        if not await cls.add_group(id=id, bot_id=bot_id, decrease_notice=switch, admin = True):
+            await Group.update({"id": id,"bot_id":bot_id}, decrease_notice=switch)
+
+    @classmethod
+    async def set_guild_decrease_notice(cls, guild_id, channel_id, bot_id, switch):
+        """设置指定频道退出通知"""
+        if not await cls.add_guild(
+            guild_id=guild_id, channel_id=channel_id, bot_id=bot_id, decrease_notice=switch, admin=True
+        ):
+            await Guild.update(
+                {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}, decrease_notice=switch
             )
 
     @classmethod
@@ -152,9 +186,9 @@ class DB:
         return await Guild.get(**kwargs).first()
 
     @classmethod
-    async def get_guild_type_id(cls, guild_id, channel_id) -> Optional[int]:
+    async def get_guild_type_id(cls, guild_id, channel_id, bot_id) -> Optional[int]:
         """获取频道订阅 ID"""
-        guild = await Guild.get(guild_id=guild_id, channel_id=channel_id).first()
+        guild = await Guild.get(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id).first()
         return guild.id if guild else None
 
     @classmethod
@@ -183,7 +217,7 @@ class DB:
             return False
         await cls.add_user(uid=kwargs["uid"], name=name)
         if kwargs["type"] == "group":
-            await cls.add_group(id=kwargs["type_id"], admin=True)
+            await cls.add_group(id=kwargs["type_id"], bot_id=kwargs["bot_id"], admin=True, decrease_notice=True)
         await cls.update_uid_list()
         return True
 
