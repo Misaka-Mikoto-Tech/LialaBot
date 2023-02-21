@@ -17,7 +17,7 @@ async def _(event: Union[GroupDecreaseNoticeEvent, ChannelDestroyedNoticeEvent],
     if isinstance(event, GroupDecreaseNoticeEvent):
         if event.self_id == event.user_id:
             await db.delete_sub_list(type="group", type_id=event.group_id, bot_id=bot.self_id)
-            await db.delete_group(id=event.group_id)
+            await db.delete_group(group_id=event.group_id)
     elif isinstance(event, ChannelDestroyedNoticeEvent):
         await db.delete_sub_list(type="guild", type_id=await get_type_id(event), bot_id=bot.self_id)
-        await db.delete_guild(id=await get_type_id(event))
+        await db.delete_guild(guild_id=await get_type_id(event))
