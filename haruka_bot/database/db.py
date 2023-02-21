@@ -108,7 +108,6 @@ class DB:
         group = await cls.get_group(group_id=group_id, bot_id=bot_id)
         if not group:
             # TODO 自定义默认状态
-            logger.warning(f"查询退群通知状态失败，返回默认值True,bot:{bot_id}, group:{group_id}")
             return True
         return bool(group.decrease_notice)
 
