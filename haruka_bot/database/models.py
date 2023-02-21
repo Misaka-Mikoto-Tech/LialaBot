@@ -61,7 +61,8 @@ class User(BaseModel):
     name = CharField(max_length=20)
 
 class Group(BaseModel):
-    group_id = IntField() # pk=True, tortoise 不支持复合主键，因此只能代码里不设置主键(数据库定义可以手动设置复合主键)
+    # tortoise 不支持复合主键，因此只能代码里不设置主键(tortoise会自动创建一个名为id的自增列作为主键)
+    group_id = IntField() # pk=True
     bot_id = IntField() # pk=True
     admin = BooleanField(default=True)  # default=True
     decrease_notice = BooleanField(default=True) # default=True
