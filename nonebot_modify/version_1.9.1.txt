@@ -1,0 +1,11 @@
+pip show nonebot
+Name: nonebot
+Version: 1.9.1
+Summary: An asynchronous QQ bot framework based on CoolQ.
+Home-page: https://github.com/nonebot/nonebot
+Author: NoneBot Team
+Author-email:
+License: MIT License
+Location: c:\python310\lib\site-packages
+Requires: aiocache, aiocqhttp
+Required-by:
