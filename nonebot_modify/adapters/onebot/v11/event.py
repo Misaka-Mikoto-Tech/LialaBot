@@ -191,7 +191,8 @@ class PrivateMessageEvent(MessageEvent):
                 )
                 texts.clear()
         msg_string.append(escape_tag("".join(texts)))
-        return f"Message {self.message_id} from {self.user_id} {''.join(msg_string)!r}"
+        nickname_ = self.sender.nickname if self.sender else ''
+        return f"Message {self.message_id} from {nickname_}({self.user_id}) {''.join(msg_string)!r}"
 
 
 class GroupMessageEvent(MessageEvent):
@@ -199,6 +200,7 @@ class GroupMessageEvent(MessageEvent):
 
     message_type: Literal["group"]
     group_id: int
+    group_name: Optional[str]
     anonymous: Optional[Anonymous] = None
 
     @overrides(Event)
@@ -214,7 +216,9 @@ class GroupMessageEvent(MessageEvent):
                 )
                 texts.clear()
         msg_string.append(escape_tag("".join(texts)))
-        return f"Message {self.message_id} from {self.user_id}@[群:{self.group_id}] {''.join(msg_string)!r}"
+        nickname_ = self.sender.nickname if self.sender else ''
+        groupname_ = group_name if group_name else ''
+        return f"Message {self.message_id} from {nickname_}({self.user_id})@[群:{groupname_}({self.group_id})] {''.join(msg_string)!r}"
 
     @overrides(MessageEvent)
     def get_session_id(self) -> str:

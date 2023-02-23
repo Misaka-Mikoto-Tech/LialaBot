@@ -44,7 +44,7 @@ class MessageSegment(BaseMessageSegment["Message"]):
             return escape(self.data.get("text", ""), escape_comma=False)
 
         params = ", ".join(
-            [f"{k}={truncate(str(v))}" for k, v in self.data.items() if v is not None]
+            [f"{k}={str(v)}" for k, v in self.data.items() if v is not None]
         )
         return f"[{self.type}{':' if params else ''}{params}]"
 

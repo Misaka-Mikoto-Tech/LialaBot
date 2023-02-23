@@ -3,15 +3,15 @@ cd /docker-data/haruka-bot
 nohup hb run &
 sleep 5
 
-cd /docker-data/go-cqhttp_3175613658_YiCheng-Bot
+cd /docker-data/go-cqhttp_123456-bot
 nohup go-cqhttp &
 sleep 5
 
-cd /docker-data/go-cqhttp_372135609_Misaka
+cd /docker-data/go-cqhttp_234567-bot
 nohup go-cqhttp &
 sleep 5
 
-cd /docker-data/go-cqhttp_2523741995_Liala-Bot
+cd /docker-data/go-cqhttp_56789-bot
 nohup go-cqhttp &
 sleep 5
 
