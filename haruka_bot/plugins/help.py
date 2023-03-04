@@ -1,4 +1,4 @@
-from nonebot.matcher import matchers
+﻿from nonebot.matcher import matchers
 from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import MessageEvent
 
@@ -24,5 +24,5 @@ async def _(event: MessageEvent, bot:Bot):
                 and matcher.__doc__
             ):
                 message += matcher.__doc__ + "\n"
-    message += f"\n当前版本：v{__version__}\n" "详细帮助：https://haruka-bot.sk415.icu/usage/"
+    message += f"\n当前版本：v{__version__}\n" "github：Misaka-Mikoto-Tech"
     await help.finish(message)
