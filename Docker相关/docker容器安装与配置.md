@@ -20,7 +20,7 @@
   - /docker-data/start_bots.sh 跑起来看看
   - 保存此镜像为 `gocq-hb-bots-ssh-original`
 * 修改bots为自定义
-  - 使用 LialaBots 覆盖 `/usr/local/lib/python3.8/dist-packages/haruka_bot` 目录
+  - 使用 LialaBots 覆盖 `/usr/local/lib/python3.8/dist-packages/haruka_bot` 目录以及 `nonebot` 相关目录
   - 使用自定义的 go-cqhttp 覆盖 `/usr/bin/go-cqhttp`
   - /docker-data/start_bots.sh 跑起来看看
   - 保存此镜像为 `gocq-hb-bots-ssh-custom`

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Dict, Optional
 
 from pydantic import BaseSettings, validator
 from pydantic.fields import ModelField
@@ -23,6 +23,7 @@ class Config(BaseSettings):
     # 频道管理员身份组
     haruka_guild_admin_roles: List[str] = ["频道主", "管理员"]
     exclusive_bots:List[int] = [] # 独占模式的bot列表，只允许自己控制自己
+    bot_names:Dict[int,str] = {}
 
     @validator("haruka_interval", "haruka_live_interval", "haruka_dynamic_interval")
     def non_negative(cls, v: int, field: ModelField):

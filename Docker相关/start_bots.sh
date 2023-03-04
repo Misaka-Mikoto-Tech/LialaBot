@@ -15,7 +15,7 @@ cd /docker-data/go-cqhttp_56789-bot
 nohup go-cqhttp &
 sleep 5
 
-
+service ssh start
 
 echo
 echo type [quit] if you want quit
