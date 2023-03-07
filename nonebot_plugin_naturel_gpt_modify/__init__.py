@@ -4,6 +4,7 @@ from nonebot import on_command, on_message, on_notice
 from nonebot.log import logger
 from nonebot.params import CommandArg, Matcher, Event
 from nonebot.adapters.onebot.v11 import Bot, Message, MessageEvent, PrivateMessageEvent, GroupMessageEvent, MessageSegment, GroupIncreaseNoticeEvent
+from nonebot.rule import to_me
 
 import time
 import copy
@@ -18,7 +19,7 @@ import traceback
 import asyncio
 
 from .config import *
-from .utils import *
+from . import utils
 
 global_config = get_driver().config
 # logger.info(config) # 这里可以打印出配置文件的内容
@@ -437,7 +438,7 @@ async def handler(matcher_:Matcher, event: MessageEvent, bot:Bot) -> None:
         return
     
     # 处理消息前先检查权限
-    if not await gpt_has_permission(matcher=matcher_, event=event,bot=bot,cmd=None,type='message'):
+    if not await utils.gpt_has_permission(matcher=matcher_, event=event,bot=bot,cmd=None,type='message'):
         return
     
     # 判断用户账号是否被屏蔽
@@ -499,7 +500,7 @@ async def _(matcher_:Matcher, event: GroupIncreaseNoticeEvent, bot:Bot):  # even
         return
     
     # 处理通知前先检查权限
-    if not await gpt_has_permission(matcher=matcher_, event=event,bot=bot,cmd=None,type='notice'):
+    if not await utils.gpt_has_permission(matcher=matcher_, event=event,bot=bot,cmd=None,type='notice'):
         return
 
     if isinstance(event, GroupIncreaseNoticeEvent): # 群成员增加通知
@@ -533,12 +534,9 @@ async def _(matcher_:Matcher, event: GroupIncreaseNoticeEvent, bot:Bot):  # even
 
 """ ======== 注册指令响应器 ======== """
 # 人格设定指令 用于设定人格的相关参数
-identity:Matcher = on_command("identity", aliases={"人格设定", "人格", "rg"}, priority=config['NG_MSG_PRIORITY'] - 1, block=True)
+identity:Matcher = on_command("identity", aliases={"人格设定", "人格", "rg"}, rule=to_me(), priority=config['NG_MSG_PRIORITY'] - 1, block=True)
 @identity.handle()
 async def _(matcher_:Matcher, event: MessageEvent, bot:Bot, arg: Message = CommandArg()):
-    if event.post_type == 'message_sent': # 自己发送的不处理
-        return
-
     is_progress = False
     # 判断是否是禁止使用的用户
     if event.get_user_id() in config.get('FORBIDDEN_USERS', []):
@@ -567,7 +565,7 @@ async def _(matcher_:Matcher, event: MessageEvent, bot:Bot, arg: Message = Comma
     presets_show_text = '\n'.join([f'  -> {k + " (当前)" if k == chat.get_chat_preset_key() else k}' for k in list(presets_dict.keys())])
 
     # 执行命令前先检查权限
-    if not await gpt_has_permission(matcher=matcher_, event=event,bot=bot,cmd=cmd,type='cmd'):
+    if not await utils.gpt_has_permission(matcher=matcher_, event=event,bot=bot,cmd=cmd,type='cmd'):
         await identity.finish("对不起！你没有权限进行此操作 ＞﹏＜")
 
     if not cmd:
