@@ -66,6 +66,6 @@ async def permission_check_chatgpt(matcher:Matcher, event: MessageEvent, bot:Bot
                     '记忆','memory']:
         return await (SUPERUSER)(bot, event) # chgpt 设定必须是bot自身或者超级管理员
     
-    return False
+    return True
 
 nonebot_plugin_naturel_gpt.utils.gpt_has_permission = permission_check_chatgpt
