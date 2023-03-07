@@ -14,6 +14,7 @@ app = nonebot.get_asgi()
 # 删除 haruka_bot 导入，否则 nonebot 导入时会忽略
 del sys.modules["haruka_bot"]
 nonebot.load_plugin("haruka_bot")
+nonebot.load_plugin("nonebot_plugin_naturel_gpt")
 
 # Modify some config / config depends on loaded configs
 #

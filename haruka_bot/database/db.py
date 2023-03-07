@@ -119,6 +119,30 @@ class DB:
             # TODO 自定义默认状态
             return True
         return bool(guild.decrease_notice)
+    
+    @classmethod
+    async def get_group_chatgpt(cls, group_id, bot_id) -> bool:
+        """"获取指定群chatgpt开启状态"""
+        group = await cls.get_group(group_id=group_id, bot_id=bot_id)
+        if not group:
+            return False
+        return bool(group.chatgpt)
+    
+    @classmethod
+    async def get_guild_chatgpt(cls, guild_id, channel_id, bot_id) -> bool:
+        """"获取指定群chatgpt开启状态"""
+        guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
+        if not guild:
+            return False
+        return bool(guild.chatgpt)
+    
+    @classmethod
+    async def get_guild_decrease_notice(cls, guild_id, channel_id, bot_id) -> bool:
+        """获取指定频道chatgpt开启状态"""
+        guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
+        if not guild:
+            return False
+        return bool(guild.chatgpt)
 
     @classmethod
     async def add_group(cls, q=None, **kwargs):
@@ -153,28 +177,48 @@ class DB:
         """设置指定群组权限"""
         q = {"group_id": group_id,"bot_id":bot_id}
         if not await cls.add_group(q, **q, admin=switch):
-            await Group.update(q, admin=switch)
+            return await Group.update(q, admin=switch)
+        return True
 
     @classmethod
     async def set_guild_permission(cls, guild_id, channel_id, bot_id, switch):
         """设置指定频道权限"""
         q = {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}
-        if not await cls.add_guild(q, **q, admin=switch, decrease_notice=True):
-            await Guild.update(q, admin=switch)
+        if not await cls.add_guild(q, **q, admin=switch):
+            return await Guild.update(q, admin=switch)
+        return True
 
     @classmethod
     async def set_group_decrease_notice(cls, group_id, bot_id, switch):
         """设置指定群组退群通知"""
         q = {"group_id": group_id,"bot_id":bot_id}
-        if not await cls.add_group(q, **q, admin=True, decrease_notice=switch):
-            await Group.update(q, decrease_notice=switch)
+        if not await cls.add_group(q, **q, decrease_notice=switch):
+            return await Group.update(q, decrease_notice=switch)
+        return True
 
     @classmethod
     async def set_guild_decrease_notice(cls, guild_id, channel_id, bot_id, switch):
         """设置指定频道退出通知"""
         q = {"guild_id": guild_id, "channel_id": channel_id, "bot_id": bot_id}
-        if not await cls.add_guild(q, **q, admin=True, decrease_notice=switch):
-            await Guild.update(q, decrease_notice=switch)
+        if not await cls.add_guild(q, **q, decrease_notice=switch):
+            return await Guild.update(q, decrease_notice=switch)
+        return True
+
+    @classmethod
+    async def set_group_chatgpt(cls, group_id, bot_id, switch):
+        """设置指定群组chatgpt状态"""
+        q = {"group_id":group_id, "bot_id":bot_id}
+        if not await cls.add_group(q, **q, chatgpt=switch):
+            return await Group.update(q, chatgpt=switch)
+        return True
+
+    @classmethod
+    async def set_guild_chatgpt(cls, guild_id, bot_id, switch):
+        """设置指定频道chatgpt状态"""
+        q = {"guild_id":guild_id, "bot_id":bot_id}
+        if not await cls.add_guild(q, **q, chatgpt=switch):
+            return await Guild.update(q, chatgpt=switch)
+        return True
 
     @classmethod
     async def get_guild(cls, **kwargs):

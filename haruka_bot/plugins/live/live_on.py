@@ -12,7 +12,7 @@ from ...utils import (
     uid_check,
 )
 
-live_on = on_command("开启直播", rule=to_me(), priority=5)
+live_on = on_command("开启直播", rule=to_me(), priority=5, block=True)
 live_on.__doc__ = """开启直播 UID"""
 
 live_on.handle()(permission_check)

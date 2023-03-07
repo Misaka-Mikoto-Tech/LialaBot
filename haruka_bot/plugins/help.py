@@ -6,7 +6,7 @@ from ..utils import on_command, to_me
 from ..version import __version__
 from .. import config
 
-help = on_command("帮助", rule=to_me(), priority=5)
+help = on_command("帮助", rule=to_me(), priority=5, block=True) # 数值越小优先级越高
 
 
 @help.handle()
@@ -24,5 +24,5 @@ async def _(event: MessageEvent, bot:Bot):
                 and matcher.__doc__
             ):
                 message += matcher.__doc__ + "\n"
-    message += f"\n当前版本：v{__version__}\n" "github：Misaka-Mikoto-Tech"
+    message += f"\n当前版本：v{__version__}\n" "https://github.com/Misaka-Mikoto-Tech"
     await help.finish(message)

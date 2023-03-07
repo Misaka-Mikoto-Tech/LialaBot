@@ -13,7 +13,7 @@ from ...utils import (
     to_me,
 )
 
-decrease_notice_off = on_command("关闭退群通知", rule=to_me(), priority=5)
+decrease_notice_off = on_command("关闭退群通知", rule=to_me(), priority=5, block=True)
 decrease_notice_off.__doc__ = """关闭退群通知"""
 
 decrease_notice_off.handle()(permission_check)

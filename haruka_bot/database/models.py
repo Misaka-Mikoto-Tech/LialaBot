@@ -66,6 +66,7 @@ class Group(BaseModel):
     bot_id = IntField() # pk=True
     admin = BooleanField(default=True)  # default=True
     decrease_notice = BooleanField(default=True) # default=True
+    chatgpt = BooleanField(default=False) # default=False
 
 class Guild(BaseModel):
     bot_id = IntField() # pk=True
@@ -73,6 +74,7 @@ class Guild(BaseModel):
     channel_id = TextField() # pk=True
     admin = BooleanField(default=True)  # default=True
     decrease_notice = BooleanField(default=True) # default=True
+    chatgpt = BooleanField(default=False) # default=False
 
 
 class Version(BaseModel):

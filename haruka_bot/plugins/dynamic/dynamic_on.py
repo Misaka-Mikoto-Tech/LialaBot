@@ -12,7 +12,7 @@ from ...utils import (
     uid_check,
 )
 
-dynamic_on = on_command("开启动态", rule=to_me(), priority=5)
+dynamic_on = on_command("开启动态", rule=to_me(), priority=5, block=True)
 dynamic_on.__doc__ = """开启动态 UID"""
 
 dynamic_on.handle()(permission_check)

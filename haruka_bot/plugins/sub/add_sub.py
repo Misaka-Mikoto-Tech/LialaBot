@@ -15,7 +15,7 @@ from ...utils import (
     uid_check,
 )
 
-add_sub = on_command("关注", aliases={"添加主播"}, rule=to_me(), priority=5)
+add_sub = on_command("关注", aliases={"添加主播"}, rule=to_me(), priority=5, block=True)
 add_sub.__doc__ = """关注 UID"""
 
 add_sub.handle()(permission_check)

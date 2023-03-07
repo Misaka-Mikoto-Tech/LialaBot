@@ -16,7 +16,7 @@ permission_off = on_command(
     "关闭权限",
     rule=to_me(),
     #permission=GROUP_OWNER | GROUP_ADMIN | SUPERUSER | GUILD_ADMIN | BOT_SELF,
-    priority=5,
+    priority=5, block=True
 )
 permission_off.__doc__ = """关闭权限"""
 

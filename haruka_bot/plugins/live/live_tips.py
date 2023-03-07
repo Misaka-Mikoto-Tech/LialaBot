@@ -13,7 +13,7 @@ from ...utils import (
     uid_check,
 )
 
-live_tips = on_command("开播提示词", rule=to_me(), priority=5)
+live_tips = on_command("开播提示词", rule=to_me(), priority=5, block=True)
 live_tips.__doc__ = """开播提示词 UID:提示词（留空则恢复默认）"""
 
 live_tips.handle()(permission_check)

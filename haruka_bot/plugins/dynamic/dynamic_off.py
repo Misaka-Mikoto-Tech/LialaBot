@@ -12,7 +12,7 @@ from ...utils import (
     uid_check,
 )
 
-dynamic_off = on_command("关闭动态", rule=to_me(), priority=5)
+dynamic_off = on_command("关闭动态", rule=to_me(), priority=5, block=True)
 dynamic_off.__doc__ = """关闭动态 UID"""
 
 dynamic_off.handle()(permission_check)
