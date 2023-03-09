@@ -50,7 +50,7 @@ async def get_dynamic_screenshot(dynamic_id, style=config.haruka_screenshot_styl
 async def get_dynamic_screenshot_mobile(dynamic_id):
     """移动端动态截图"""
     url = f"https://m.bilibili.com/dynamic/{dynamic_id}"
-    browser = await get_browser()
+    browser:Browser = await get_browser()
     page = await browser.new_page(
         device_scale_factor=2,
         user_agent=(
