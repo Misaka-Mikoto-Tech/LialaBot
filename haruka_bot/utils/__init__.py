@@ -177,11 +177,21 @@ async def permission_check_chatgpt(matcher:Matcher, event: MessageEvent, bot:Bot
         else:
             return (False, '权限不足，无法完成操作')
     
-    if args[0] in ['admin', '设定','set', '更新','update','edit','添加','new', '删除','del','delete',
-                    '锁定','lock','解锁','unlock','开启','on', '关闭','off','重置','reset','debug','会话','chats',
-                    '记忆','memory']:
-        success = await (SUPERUSER)(bot, event) # chgpt 设定必须是bot自身或者超级管理员
-        return (success, None if success else '权限不足，只有超级管理员才可以开启ChatGPT功能')
+    common_cmd = ['', '查询', 'query', '设定', 'set', '更新', 'update', 'edit', '添加', 'new']
+    super_cmd = ['admin', '删除', 'del', 'delete',
+                       '锁定', 'lock', '解锁', 'unlock', '拓展', 'ext', '开启', 'on', '关闭', 'off', '重置', 'reset', 'debug', '会话', 'chats',
+                       '记忆', 'memory']
+    
+    is_super_user = await (SUPERUSER)(bot, event)
+    is_admin = is_super_user or await (GROUP_ADMIN | GROUP_OWNER)(bot, event)
+    
+    cmd = args[0]
+    if cmd in common_cmd:
+        return (is_admin, None if is_admin else '权限不足，只有管理员才允许使用此指令')
+    elif cmd in super_cmd:
+        return (is_super_user, None if is_super_user else '只有超级管理员才允许使用此指令')
+    else:
+        return (True, None)
     
     return (True, None)
 
