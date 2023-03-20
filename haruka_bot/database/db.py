@@ -24,11 +24,14 @@ class DB:
         """初始化数据库"""
         config = {
             "connections": {
-                # "haruka_bot": {
-                #     "engine": "tortoise.backends.sqlite",
-                #     "credentials": {"file_path": get_path("data.sqlite3")},
-                # },
-                "haruka_bot": f"sqlite://{get_path('data.sqlite3')}"
+                "haruka_bot": {
+                    "engine": "tortoise.backends.sqlite",
+                    "credentials": {
+                            "file_path": get_path("data.sqlite3"),
+                            "journal_mode":"DELETE"
+                        },
+                },
+                # "haruka_bot": f"sqlite://{get_path('data.sqlite3')}",
             },
             "apps": {
                 "haruka_bot_app": {
