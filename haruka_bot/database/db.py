@@ -133,19 +133,27 @@ class DB:
     
     @classmethod
     async def get_guild_chatgpt(cls, guild_id, channel_id, bot_id) -> bool:
-        """"获取指定群chatgpt开启状态"""
+        """"获取指定频道chatgpt开启状态"""
         guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
         if not guild:
             return False
         return bool(guild.chatgpt)
     
     @classmethod
-    async def get_guild_decrease_notice(cls, guild_id, channel_id, bot_id) -> bool:
-        """获取指定频道chatgpt开启状态"""
+    async def get_group_bili_summary(cls, group_id, bot_id) -> bool:
+        """"获取指定群B站视频解析开启状态"""
+        group = await cls.get_group(group_id=group_id, bot_id=bot_id)
+        if not group:
+            return False
+        return bool(group.bili_summary)
+    
+    @classmethod
+    async def get_guild_bili_summary(cls, guild_id, channel_id, bot_id) -> bool:
+        """"获取指定频道B站视频解析开启状态"""
         guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
         if not guild:
             return False
-        return bool(guild.chatgpt)
+        return bool(guild.bili_summary)
 
     @classmethod
     async def add_group(cls, q=None, **kwargs):
@@ -216,11 +224,27 @@ class DB:
         return True
 
     @classmethod
-    async def set_guild_chatgpt(cls, guild_id, bot_id, switch):
+    async def set_guild_chatgpt(cls, guild_id, channel_id, bot_id, switch):
         """设置指定频道chatgpt状态"""
-        q = {"guild_id":guild_id, "bot_id":bot_id}
+        q = {"guild_id":guild_id,"channel_id": channel_id, "bot_id":bot_id}
         if not await cls.add_guild(q, **q, chatgpt=switch):
             return await Guild.update(q, chatgpt=switch)
+        return True
+    
+    @classmethod
+    async def set_group_bili_summary(cls, group_id, bot_id, switch):
+        """设置指定群组B站视频解析状态"""
+        q = {"group_id":group_id, "bot_id":bot_id}
+        if not await cls.add_group(q, **q, bili_summary=switch):
+            return await Group.update(q, bili_summary=switch)
+        return True
+
+    @classmethod
+    async def set_guild_bili_summary(cls, guild_id, channel_id, bot_id, switch):
+        """设置指定频道B站视频解析状态"""
+        q = {"guild_id":guild_id, "channel_id": channel_id, "bot_id":bot_id}
+        if not await cls.add_guild(q, **q, bili_summary=switch):
+            return await Guild.update(q, bili_summary=switch)
         return True
 
     @classmethod

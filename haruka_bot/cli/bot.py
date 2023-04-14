@@ -17,6 +17,7 @@ nonebot.load_plugin("nonebot_plugin_naturel_gpt")
 del sys.modules["haruka_bot"]
 nonebot.load_plugin("haruka_bot")
 
+nonebot.load_plugin("nonebot_plugin_bilichat")
 
 # Modify some config / config depends on loaded configs
 #
