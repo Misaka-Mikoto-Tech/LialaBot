@@ -29,8 +29,8 @@ async def _(event: Union[GroupMessageEvent, GroupMessageSentEvent, GuildMessageE
 
     if isinstance(event, GuildMessageEvent):
         if await db.set_guild_bili_summary(event.guild_id, event.channel_id, bot.self_id, True):
-            await bili_summary_on.finish("已开启当前频道B站视频解析，详细帮助请@bot并发送 rg 查询")
+            await bili_summary_on.finish("已开启当前频道B站视频解析")
     else:
         if await db.set_group_bili_summary(event.group_id, bot.self_id, True):
-            await bili_summary_on.finish("已开启当前群组B站视频解析，详细帮助请@bot并发送 rg 查询")
-    await bili_summary_on.finish("B站视频解析已经开启，详细帮助请@bot并发送 rg 查询")
+            await bili_summary_on.finish("已开启当前群组B站视频解析")
+    await bili_summary_on.finish("B站视频解析已经开启")

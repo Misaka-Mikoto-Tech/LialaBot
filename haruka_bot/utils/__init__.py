@@ -251,7 +251,10 @@ def on_startup():
 
         check_proxy()
         install()
-        asyncio.get_event_loop().run_until_complete(check_playwright_env())
+        try:
+            asyncio.get_event_loop().run_until_complete(check_playwright_env())
+        except Exception as ex:
+            logger.error(f'check_playwright_env error:{ex}')
         # 创建数据存储目录
         if not Path(get_path()).is_dir():
             Path(get_path()).mkdir(parents=True)

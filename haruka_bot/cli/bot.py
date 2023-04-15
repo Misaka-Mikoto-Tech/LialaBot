@@ -11,13 +11,14 @@ driver = nonebot.get_driver()
 driver.register_adapter(Adapter)
 app = nonebot.get_asgi()
 
+# nonebot.load_plugin('nonebot_plugin_picstatus') # 会疯狂占用cpu和内存，谨慎使用
 nonebot.load_plugin("nonebot_plugin_naturel_gpt")
+nonebot.load_plugin("nonebot_plugin_bilichat")
 
 # 删除 haruka_bot 导入，否则 nonebot 导入时会忽略
 del sys.modules["haruka_bot"]
 nonebot.load_plugin("haruka_bot")
 
-nonebot.load_plugin("nonebot_plugin_bilichat")
 
 # Modify some config / config depends on loaded configs
 #

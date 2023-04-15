@@ -1,7 +1,8 @@
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Awaitable
 
+from nonebot.log import logger
 from nonebot_plugin_guild_patch import GuildMessageEvent
-from nonebot_modify.adapters.onebot.v11.event import GroupMessageEvent, MessageEvent
+from nonebot.adapters.onebot.v11.event import MessageEvent, GroupMessageEvent, PrivateMessageEvent
 from nonebot.adapters.onebot.v11 import Bot
 
 async def bili_summary_check_is_enable(event: MessageEvent, bot:Bot) -> bool:
@@ -20,6 +21,6 @@ async def bili_summary_check_is_enable(event: MessageEvent, bot:Bot) -> bool:
     
 try:
     import nonebot_plugin_bilichat
-    nonebot_plugin_bilichat.check_is_enable = bili_summary_check_is_enable
-except:
-    pass
+    nonebot_plugin_bilichat.check_is_enabled = bili_summary_check_is_enable
+except Exception as ex:
+    logger.error(f'haruka_bot.plugins.bili_summary: set [nonebot_plugin_bilichat.check_is_enabled fail]:{ex}')

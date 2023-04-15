@@ -2,14 +2,13 @@
 
 from nonebot.matcher import Matcher
 from nonebot_plugin_guild_patch import GUILD_ADMIN, GuildMessageEvent
-from nonebot_modify.adapters.onebot.v11.event import GroupMessageEvent, MessageEvent, PrivateMessageEvent
-from nonebot.adapters.onebot.v11 import Bot
-from nonebot.adapters.onebot.v11.event import GroupMessageEvent, PrivateMessageEvent
+from nonebot.adapters import Bot, Event
+from nonebot.adapters.onebot.v11.event import Sender, GroupMessageEvent, PrivateMessageEvent
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.matcher import Matcher
 from nonebot.permission import SUPERUSER
 
-async def permission_check_chatgpt(matcher:Matcher, event: MessageEvent, bot:Bot, cmd:str, type:str = 'cmd') -> Tuple[bool, Optional[str]]:
+async def permission_check_chatgpt(matcher:Matcher, event: Event, bot:Bot, cmd:str, type:str = 'cmd') -> Tuple[bool, Optional[str]]:
     """chatgpt相关的操作权限检查"""
 
     from ...database import DB as db
@@ -29,14 +28,19 @@ async def permission_check_chatgpt(matcher:Matcher, event: MessageEvent, bot:Bot
     if not cmd: # None or ''
         return (True, None)
     
-    if event.sender.user_id == int(bot.self_id): # bot 自身永远有权限
+    if not hasattr(event, 'sender'):
+        return (True, None)
+    else:
+        sender:Sender = getattr(event, 'sender')
+
+    if sender.user_id == int(bot.self_id): # bot 自身永远有权限
         return (True, None)
 
     args:List[str] = cmd.split(' ')
  
     from haruka_bot import config
     def check_exclusive_bot() -> bool:
-        return not ((bot_id in config.exclusive_bots) and (event.sender.user_id != bot_id))
+        return not ((bot_id in config.exclusive_bots) and (sender.user_id != bot_id))
 
     has_permission:bool = False
     is_exclusive:bool = False
