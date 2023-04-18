@@ -15,7 +15,7 @@ async def _(event: MessageEvent, bot:Bot):
     if bot_id in config.bot_names:
         message = f"{config.bot_names[bot_id]}目前支持的功能：\n（请将UID替换为需要操作的B站UID）\n"
     else:
-        message = "LialaBot目前支持的功能：\n（请将UID替换为需要操作的B站UID）\n"
+        message = "Bot目前支持的功能：\n（请将UID替换为需要操作的B站UID）\n"
     for matchers_list in matchers.values():
         for matcher in matchers_list:
             if (
@@ -24,5 +24,6 @@ async def _(event: MessageEvent, bot:Bot):
                 and matcher.__doc__
             ):
                 message += matcher.__doc__ + "\n"
+    message += "绘画\n"
     message += f"\n当前版本：v{__version__}\n" "https://github.com/Misaka-Mikoto-Tech"
     await help.finish(message)
