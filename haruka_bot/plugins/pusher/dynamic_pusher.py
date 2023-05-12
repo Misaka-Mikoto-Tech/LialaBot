@@ -67,14 +67,17 @@ async def dy_sched():
     for dynamic in sorted(dynamics, key=lambda x: int(x.extend.dyn_id_str)):  # 动态从旧到新排列
         dynamic_id = int(dynamic.extend.dyn_id_str)
         if dynamic_id > offset[uid]:
-            logger.info(f"检测到新动态（{dynamic_id}）：{name}（{uid}）")
             url = f"https://t.bilibili.com/{dynamic_id}"
+
+            if dynamic.card_type == DynamicType.live_rcmd:
+                logger.debug(f'直播推荐动态，已跳过: {url}')
+                offset[uid] = dynamic_id
+                return
+            
+            logger.info(f"检测到新动态（{dynamic_id}）：{name}（{uid}）")
             image = await get_dynamic_screenshot(dynamic_id)
             if image is None:
                 logger.debug(f"动态不存在，已跳过：{url}")
-                return
-            elif dynamic.card_type == DynamicType.live_rcmd:
-                logger.debug(f'直播推荐动态，已跳过: {url}')
                 return
 
             type_msg = {
