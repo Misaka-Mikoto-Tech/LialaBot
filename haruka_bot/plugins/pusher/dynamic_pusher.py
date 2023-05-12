@@ -26,7 +26,7 @@ async def dy_sched():
         # 没有订阅先暂停一秒再跳过，不然会导致 CPU 占用过高
         await asyncio.sleep(1)
         return
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(0.7)
     user = await db.get_user(uid=uid)
     assert user is not None
     name = user.name

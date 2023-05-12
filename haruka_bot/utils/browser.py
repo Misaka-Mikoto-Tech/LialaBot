@@ -69,6 +69,10 @@ async def get_dynamic_screenshot_mobile(dynamic_id):
         # 动态被删除或者进审核了
         if page.url == "https://m.bilibili.com/404":
             return None
+        
+        # 出现了验证码，等下一次重来
+        if await page.query_selector(".geetest_panel"):
+            return None
         # await page.add_script_tag(
         #     content=
         #     # 去除打开app按钮
