@@ -17,7 +17,7 @@ class LiveStatusData:
     online_time:float = 0
     offline_time:float = 0
 
-all_status:Dict[int,LiveStatusData] = {} # [uid, LiveStatusData]
+all_status:Dict[str,LiveStatusData] = {} # [uid, LiveStatusData]
 
 def format_time_span(seconds:float)->str:
     m, s = divmod(seconds, 60)

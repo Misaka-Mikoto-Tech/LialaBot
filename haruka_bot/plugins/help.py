@@ -1,10 +1,11 @@
 ﻿from nonebot.matcher import matchers
-from nonebot.adapters.onebot.v11 import Bot
+from nonebot.adapters.onebot.v11 import Bot, MessageSegment
 from nonebot.adapters.onebot.v11.event import MessageEvent
 
 from ..utils import on_command, to_me
 from ..version import __version__
 from .. import config
+from . import text_to_img
 
 help = on_command("帮助", rule=to_me(), priority=5, block=True) # 数值越小优先级越高
 
@@ -25,5 +26,6 @@ async def _(event: MessageEvent, bot:Bot):
             ):
                 message += matcher.__doc__ + "\n"
     message += "绘画\n"
+    message = MessageSegment.image(await text_to_img(message))
     message += f"\n当前版本：v{__version__}\n" "https://github.com/Misaka-Mikoto-Tech"
     await help.finish(message)
