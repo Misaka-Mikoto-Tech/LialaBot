@@ -11,8 +11,3 @@ from .sub import add_sub, delete_sub, sub_list  # noqa: F401
 from .notice import decrease_notice_on, decrease_notice_off  # noqa: F401
 from .chatgpt import chatgpt_on, chatgpt_off  # noqa: F401
 from .bili_summary import bili_summary_on, bili_summary_off  # noqa: F401
-
-import nonebot_plugin_htmlrender
-async def text_to_img(text):
-    img = await nonebot_plugin_htmlrender.text_to_pic(text)
-    return img

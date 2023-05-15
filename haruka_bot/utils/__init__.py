@@ -39,6 +39,10 @@ def get_path(*other):
         # dir_path = Path.cwd().joinpath('data', 'haruka_bot')
     return str(dir_path.joinpath(*other))
 
+async def text_to_img(text, width=500):
+    import nonebot_plugin_htmlrender
+    img = await nonebot_plugin_htmlrender.text_to_pic(text, width=width)
+    return img
 
 async def handle_uid(
     matcher: Matcher,
