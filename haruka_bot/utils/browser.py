@@ -72,6 +72,7 @@ async def get_dynamic_screenshot_mobile(dynamic_id):
         
         # 出现了验证码，等下一次重来
         if await page.query_selector(".geetest_panel"):
+            logger.info(f'截图动态时遇到了验证码，等下一次重来: {url}')
             return None
         # await page.add_script_tag(
         #     content=
