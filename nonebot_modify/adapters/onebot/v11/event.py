@@ -198,7 +198,7 @@ class GroupMessageEvent(MessageEvent):
     @overrides(Event)
     def get_event_description(self) -> str:
         nickname_ = self.sender.nickname if self.sender else ''
-        groupname_ = group_name if group_name else ''
+        groupname_ = self.group_name if self.group_name else ''
         return (
             f"Message {self.message_id} from {nickname_}({self.user_id})@[群:{groupname_}({self.group_id})] "
             f"{''.join(highlight_rich_message(repr(self.original_message.to_rich_text())))}"
