@@ -13,6 +13,7 @@ app = nonebot.get_asgi()
 
 # nonebot.load_plugin('nonebot_plugin_picstatus') # 会疯狂占用cpu和内存，谨慎使用
 nonebot.load_plugin("nonebot_plugin_naturel_gpt")
+nonebot.load_plugin("nonebot_plugin_novelai")
 nonebot.load_plugin("nonebot_plugin_bilichat")
 
 # 删除 haruka_bot 导入，否则 nonebot 导入时会忽略
