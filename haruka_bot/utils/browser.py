@@ -54,8 +54,8 @@ async def get_dynamic_screenshot_mobile(dynamic_id):
     page = await browser.new_page(
         device_scale_factor=2,
         user_agent=(
-            "Mozilla/5.0 (Linux; Android 10; RMX1911) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36"
+            "Mozilla/5.0 (Linux; Android 11; RMX3161 Build/RKQ1.201217.002; wv) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Version/4.0 Chrome/100.0.4896.58 Mobile Safari/537.36"
         ),
         viewport={"width": 460, "height": 780},
     )
