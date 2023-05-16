@@ -3,7 +3,7 @@ from typing import Optional, Tuple, Awaitable
 from nonebot.log import logger
 from nonebot_plugin_guild_patch import GuildMessageEvent
 from nonebot.adapters.onebot.v11.event import MessageEvent, GroupMessageEvent, PrivateMessageEvent
-from nonebot.adapters.onebot.v11 import Bot
+from nonebot.adapters import Bot
 
 async def bili_summary_check_is_enable(event: MessageEvent, bot:Bot) -> bool:
     """是否启用B站视频解析功能"""
