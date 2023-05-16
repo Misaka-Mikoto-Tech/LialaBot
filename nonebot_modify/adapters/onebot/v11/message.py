@@ -8,13 +8,15 @@ FrontMatter:
 import re
 from io import BytesIO
 from pathlib import Path
-from base64 import b64encode
+from functools import partial
 from typing import Type, Tuple, Union, Iterable, Optional
 
 from nonebot.typing import overrides
 
+from nonebot.adapters.onebot.utils import b2s, f2s
 from nonebot.adapters import Message as BaseMessage
-from nonebot.adapters.onebot.utils import b2s, truncate
+from nonebot.adapters.onebot.utils import rich_escape
+from nonebot.adapters.onebot.utils import truncate as trunc
 from nonebot.adapters import MessageSegment as BaseMessageSegment
 
 from .utils import log, escape, unescape
@@ -30,21 +32,24 @@ class MessageSegment(BaseMessageSegment["Message"]):
 
     @overrides(BaseMessageSegment)
     def __str__(self) -> str:
-        # process special types
         if self.is_text():
             return escape(self.data.get("text", ""), escape_comma=False)
 
         params = ",".join(
-            [f"{k}={escape(str(v))}" for k, v in self.data.items() if v is not None]
+            f"{k}={escape(str(v))}" for k, v in self.data.items() if v is not None
         )
         return f"[CQ:{self.type}{',' if params else ''}{params}]"
 
-    def __repr__(self) -> str:
+    def to_rich_text(self, truncate: Optional[int] = 70) -> str:
         if self.is_text():
-            return escape(self.data.get("text", ""), escape_comma=False)
+            return rich_escape(self.data.get("text", ""), escape_comma=False)
 
-        params = ", ".join(
-            [f"{k}={str(v)}" for k, v in self.data.items() if v is not None]
+        truncate_func = partial(trunc, length=truncate) if truncate else lambda x: x
+
+        params = ",".join(
+            f"{k}={rich_escape(str(v))}"
+            for k, v in self.data.items()
+            if v is not None
         )
         return f"[{self.type}{':' if params else ''}{params}]"
 
@@ -109,16 +114,10 @@ class MessageSegment(BaseMessageSegment["Message"]):
         proxy: bool = True,
         timeout: Optional[int] = None,
     ) -> "MessageSegment":
-        if isinstance(file, BytesIO):
-            file = file.getvalue()
-        if isinstance(file, bytes):
-            file = f"base64://{b64encode(file).decode()}"
-        elif isinstance(file, Path):
-            file = file.resolve().as_uri()
         return MessageSegment(
             "image",
             {
-                "file": file,
+                "file": f2s(file),
                 "type": type_,
                 "cache": b2s(cache),
                 "proxy": b2s(proxy),
@@ -195,16 +194,10 @@ class MessageSegment(BaseMessageSegment["Message"]):
         proxy: Optional[bool] = None,
         timeout: Optional[int] = None,
     ) -> "MessageSegment":
-        if isinstance(file, BytesIO):
-            file = file.getvalue()
-        if isinstance(file, bytes):
-            file = f"base64://{b64encode(file).decode()}"
-        elif isinstance(file, Path):
-            file = file.resolve().as_uri()
         return MessageSegment(
             "record",
             {
-                "file": file,
+                "file": f2s(file),
                 "magic": b2s(magic),
                 "cache": b2s(cache),
                 "proxy": b2s(proxy),
@@ -246,16 +239,10 @@ class MessageSegment(BaseMessageSegment["Message"]):
         proxy: Optional[bool] = None,
         timeout: Optional[int] = None,
     ) -> "MessageSegment":
-        if isinstance(file, BytesIO):
-            file = file.getvalue()
-        if isinstance(file, bytes):
-            file = f"base64://{b64encode(file).decode()}"
-        elif isinstance(file, Path):
-            file = file.resolve().as_uri()
         return MessageSegment(
             "video",
             {
-                "file": file,
+                "file": f2s(file),
                 "cache": b2s(cache),
                 "proxy": b2s(proxy),
                 "timeout": timeout,
@@ -283,8 +270,8 @@ class Message(BaseMessage[MessageSegment]):
             MessageSegment.text(other) if isinstance(other, str) else other
         )
 
-    def __repr__(self) -> str:
-        return "".join(repr(seg) for seg in self)
+    def to_rich_text(self, truncate: Optional[int] = 70) -> str:
+        return "".join(seg.to_rich_text(truncate=truncate) for seg in self)
 
     @overrides(BaseMessage)
     def __radd__(
