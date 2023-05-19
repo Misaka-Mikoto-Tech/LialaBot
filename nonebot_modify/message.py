@@ -149,7 +149,7 @@ async def _run_matcher(
     stack: Optional[AsyncExitStack] = None,
     dependency_cache: Optional[T_DependencyCache] = None,
 ) -> None:
-    logger.info(f"Event will be handled by {Matcher}")
+    logger.debug(f"Event will be handled by {Matcher}")
 
     matcher = Matcher()
     if coros := [
