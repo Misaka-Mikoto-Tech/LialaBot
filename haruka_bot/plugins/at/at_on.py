@@ -7,7 +7,7 @@ from nonebot.params import ArgPlainText
 from nonebot.permission import SUPERUSER
 from nonebot_plugin_guild_patch import GuildMessageEvent
 
-from ...cli.custom_event import GroupMessageSentEvent
+from ...cli.handle_message_sent import GroupMessageSentEvent
 from ...cli.custom_permission import BOT_SELF
 
 from ... import config

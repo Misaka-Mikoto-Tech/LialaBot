@@ -6,7 +6,7 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.permission import SUPERUSER
 from nonebot_plugin_guild_patch import GuildMessageEvent
 
-from ...cli.custom_event import GroupMessageSentEvent
+from ...cli.handle_message_sent import GroupMessageSentEvent
 
 from ...database import DB as db
 from ...utils import GUILD_ADMIN, group_only, on_command, permission_check, to_me

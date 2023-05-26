@@ -25,7 +25,7 @@ from nonebot.permission import SUPERUSER, Permission
 from nonebot.rule import Rule
 from nonebot_plugin_guild_patch import ChannelDestroyedNoticeEvent, GuildMessageEvent
 
-from ..cli.custom_event import GroupMessageSentEvent
+from ..cli.handle_message_sent import GroupMessageSentEvent
 
 from .. import config
 

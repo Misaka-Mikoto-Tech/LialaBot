@@ -3,7 +3,7 @@ from nonebot.adapters.onebot.v11 import Bot
 from nonebot.adapters.onebot.v11.event import GroupMessageEvent
 from nonebot_plugin_guild_patch import GuildMessageEvent
 
-from ...cli.custom_event import GroupMessageSentEvent
+from ...cli.handle_message_sent import GroupMessageSentEvent
 
 from ...database import DB as db
 from ...utils import (
