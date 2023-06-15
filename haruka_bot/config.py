@@ -23,6 +23,7 @@ class Config(BaseSettings):
     # 频道管理员身份组
     haruka_guild_admin_roles: List[str] = ["频道主", "超级管理员"]
     exclusive_bots:List[int] = [] # 独占模式的bot列表，只允许自己控制自己
+    super_user_mode_bots:List[int] = [] # 默认超管和普通管理员都可以控制的操作，改为只允许超管, 优先级低于exclusive_bots
     bot_names:Dict[int,str] = {}
 
     @validator("haruka_interval", "haruka_live_interval", "haruka_dynamic_interval")

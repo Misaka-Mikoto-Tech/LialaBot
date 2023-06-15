@@ -41,31 +41,37 @@ async def permission_check_chatgpt(matcher:Matcher, event: Event, bot:Bot, cmd:s
     from haruka_bot import config
     def check_exclusive_bot() -> bool:
         return not ((bot_id in config.exclusive_bots) and (sender.user_id != bot_id))
+    
+    async def check_super_user_mode() -> bool:
+        return not ((bot_id in config.super_user_mode_bots) and (not await SUPERUSER(bot, event)))
 
     has_permission:bool = False
-    is_exclusive:bool = False
+    err_msg = '权限不足，无法完成操作'
     if isinstance(event, PrivateMessageEvent):
         has_permission = False
     if isinstance(event, GroupMessageEvent):
         if not check_exclusive_bot():
             has_permission = False
-            is_exclusive = True
+            err_msg = '本Bot为独占模式，只有本人可以操作'
+        elif not await check_super_user_mode():
+            has_permission = False
+            err_msg = '权限不足，本bot仅允许超级管理员控制'
         elif (await db.get_group_admin(event.group_id, bot.self_id)) or (await (GROUP_ADMIN | GROUP_OWNER | SUPERUSER)(bot, event)):
             has_permission = True
     elif isinstance(event, GuildMessageEvent):
         if not check_exclusive_bot():
             has_permission =  False
-            is_exclusive = True
+            err_msg = '本Bot为独占模式，只有本人可以操作'
+        elif await check_super_user_mode():
+            has_permission = False
+            err_msg = '权限不足，本bot仅允许超级管理员控制'
         elif (await db.get_guild_admin(event.guild_id, event.channel_id, bot.self_id)) or (await (GUILD_ADMIN | SUPERUSER)(bot, event)):
             has_permission = True
     else:
         has_permission = False
 
     if not has_permission:
-        if is_exclusive:
-            return (False, '本Bot为独占模式，只有本人可以操作')
-        else:
-            return (False, '权限不足，无法完成操作')
+        return (False, err_msg)
     
     common_cmd = ['', '查询', 'query', '设定', 'set', '更新', 'update', 'edit', '添加', 'new']
     super_cmd = ['admin', '删除', 'del', 'delete',
