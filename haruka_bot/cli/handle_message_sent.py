@@ -1,3 +1,4 @@
+import asyncio
 from typing import Dict, List, Literal, Optional, Any, Set, Type, TypeVar
 from nonebot.log import logger
 import nonebot
@@ -42,11 +43,12 @@ class GroupMessageSentEvent(GroupMessageEvent):
 
 msg_sent_set:Set[str] = set() # bot 自己发送的消息
 
-"""消息发送钩子，用于记录自己发送的消息"""
 @Bot.on_called_api
 async def handle_group_message_sent(bot: Bot, exception: Optional[Exception], api: str, data: Dict[str, Any], result: Any):
+    """消息发送钩子，用于记录自己发送的消息"""
     global msg_sent_set
     if result and (api in ['send_msg', 'send_group_msg', 'send_private_msg']):
+        logger.debug(f"收到发送消息API调用：{api}, result:{result}")
         msg_id = result.get('message_id', None)
         if msg_id:
             msg_sent_set.add(f"{bot.self_id}_{msg_id}")
@@ -59,6 +61,16 @@ async def on_pre_message(event: BaseEvent, bot: BaseBot):
     if isinstance(event, GroupMessageEvent) or isinstance(event, PrivateMessageEvent):
         if event.post_type == 'message_sent': # 通过bot.send发送的消息不处理
             msg_key = f"{bot.self_id}_{event.message_id}"
+            logger.debug(f"预处理发送事件:{msg_key}")
+
+            """
+                目前在调用 bot.send 时 go-cqhttp 会立刻返回一个 message_sent 的event，并被派发 `adapter.onebot.v11.adapter.py: _handle_ws`
+                此时 Bot.call_api->await self.adapter._call_api() 还没执行完，下面的 self._called_api_hook 尚未执行
+                因此出现了 此回调比 Bot.on_called_api 执行还早的现象
+                （可能是因为这是在两个线程中执行的，所以handle_ws并不会等待call_api函数执行完毕）
+                为了避免这种情况下找不到 message_id, 故等待一下再查找
+            """ 
+            await asyncio.sleep(0.2)
             if msg_key in msg_sent_set:
                 msg_sent_set.remove(msg_key)
                 need_skip = True
