@@ -40,7 +40,7 @@ class MessageSegment(BaseMessageSegment["Message"]):
         )
         return f"[CQ:{self.type}{',' if params else ''}{params}]"
 
-    def to_rich_text(self, truncate: Optional[int] = 70) -> str:
+    def to_rich_text(self, truncate: Optional[int] = 7000000) -> str:
         if self.is_text():
             return rich_escape(self.data.get("text", ""), escape_comma=False)
 

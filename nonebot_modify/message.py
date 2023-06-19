@@ -394,7 +394,7 @@ async def _run_matcher(
     异常:
         StopPropagation: 阻止事件继续传播
     """
-    logger.info(f"Event will be handled by {Matcher}")
+    logger.debug(f"Event will be handled by {Matcher}")
 
     if Matcher.temp:
         with contextlib.suppress(Exception):
