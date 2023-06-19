@@ -738,7 +738,7 @@ class Matcher(metaclass=MatcherMeta):
             except StopPropagation:
                 self.block = True
             finally:
-                logger.debug(f"{self} running complete")
+                logger.info(f"{self} running complete")
 
     # 运行handlers
     async def run(
