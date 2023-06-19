@@ -45,7 +45,7 @@ msg_sent_set:Set[str] = set() # bot 自己发送的消息
 
 @Bot.on_called_api
 async def handle_group_message_sent(bot: Bot, exception: Optional[Exception], api: str, data: Dict[str, Any], result: Any):
-    """消息发送钩子，用于记录自己发送的消息"""
+    """消息发送API钩子，用于记录自己发送的消息"""
     global msg_sent_set
     if result and (api in ['send_msg', 'send_group_msg', 'send_private_msg']):
         logger.debug(f"收到发送消息API调用：{api}, result:{result}")
@@ -55,7 +55,7 @@ async def handle_group_message_sent(bot: Bot, exception: Optional[Exception], ap
 
 @event_preprocessor
 async def on_pre_message(event: BaseEvent, bot: BaseBot):
-    """拦截消息发送"""
+    """拦截消息事件派发"""
     global msg_sent_set
     need_skip = False
     if isinstance(event, GroupMessageEvent) or isinstance(event, PrivateMessageEvent):
