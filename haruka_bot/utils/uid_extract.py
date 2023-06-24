@@ -9,6 +9,9 @@ from .bilibili_request import search_user
 
 
 async def uid_extract(text: str)->Optional[str]:
+    if text.strip().isdigit():
+        return text.strip()
+    
     logger.debug(f"[UID Extract] Original Text: {text}")
     if user_data := await db.get_user(name=text):
         logger.debug(f"[UID Extract] 数据库中找到:{user_data}")
