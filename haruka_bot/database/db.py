@@ -93,7 +93,7 @@ class DB:
         group = await cls.get_group(group_id=group_id, bot_id=bot_id)
         if not group:
             # TODO 自定义默认状态
-            return True
+            return False
         return bool(group.admin)
 
     @classmethod
@@ -102,7 +102,7 @@ class DB:
         guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
         if not guild:
             # TODO 自定义默认状态
-            return True
+            return False
         return bool(guild.admin)
 
     @classmethod
@@ -111,7 +111,7 @@ class DB:
         group = await cls.get_group(group_id=group_id, bot_id=bot_id)
         if not group:
             # TODO 自定义默认状态
-            return True
+            return False
         return bool(group.decrease_notice)
 
     @classmethod
@@ -120,7 +120,7 @@ class DB:
         guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
         if not guild:
             # TODO 自定义默认状态
-            return True
+            return False
         return bool(guild.decrease_notice)
     
     @classmethod
@@ -144,7 +144,7 @@ class DB:
         """"获取指定群B站视频解析开启状态"""
         group = await cls.get_group(group_id=group_id, bot_id=bot_id)
         if not group:
-            return True
+            return False
         return bool(group.bili_summary)
     
     @classmethod
@@ -152,7 +152,7 @@ class DB:
         """"获取指定频道B站视频解析开启状态"""
         guild = await cls.get_guild(guild_id=guild_id, channel_id=channel_id, bot_id=bot_id)
         if not guild:
-            return True
+            return False
         return bool(guild.bili_summary)
 
     @classmethod

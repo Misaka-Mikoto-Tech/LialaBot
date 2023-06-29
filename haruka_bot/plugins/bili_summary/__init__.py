@@ -17,7 +17,7 @@ async def bili_summary_check_is_enable(event: MessageEvent, bot:Bot) -> bool:
         gld_event:GuildMessageEvent = event
         return await db.get_guild_bili_summary(guild_id=gld_event.guild_id,channel_id=gld_event.channel_id,bot_id=bot_id)
     else:
-        return True
+        return False
     
 try:
     import nonebot_plugin_bilichat

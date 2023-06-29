@@ -15,6 +15,7 @@ from ..utils.bilibili_request import get_b23_url
 from ..utils import get_dynamic_screenshot, safe_send, scheduler
 
 vive = on_command("查看动态", rule=to_me(), priority=5, block=True) # 数值越小优先级越高
+vive.__doc__ = "查看动态"
 
 @vive.handle()
 async def _(
