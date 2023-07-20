@@ -43,6 +43,9 @@ async def dy_sched():
         if e.code() == StatusCode.DEADLINE_EXCEEDED:
             logger.error("爬取动态超时，将在下个轮询中重试")
             return
+        elif e.code() == StatusCode.UNKNOWN and e.details() == "Stream removed":
+            logger.error("爬取动态错误，Stream removed，将在下个轮询中重试")
+            return
         raise
 
     if not dynamics:  # 没发过动态
