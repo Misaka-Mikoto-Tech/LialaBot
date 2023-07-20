@@ -20,6 +20,8 @@ class Config(BaseSettings):
     haruka_dynamic_font_source: str = "system"
     haruka_dynamic_font: Optional[str] = "Noto Sans CJK SC"
     haruka_command_prefix: str = ""
+    haruka_browser_ua:  Optional[str] = None
+    haruka_cookie_file: Optional[str] = None
     # 频道管理员身份组
     haruka_guild_admin_roles: List[str] = ["频道主", "超级管理员"]
     exclusive_bots:List[int] = [] # 独占模式的bot列表，只允许自己控制自己

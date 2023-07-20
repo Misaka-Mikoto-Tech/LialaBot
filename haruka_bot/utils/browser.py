@@ -51,17 +51,24 @@ async def get_dynamic_screenshot(dynamic_id, style=config.haruka_screenshot_styl
 async def get_dynamic_screenshot_mobile(dynamic_id):
     """移动端动态截图"""
     url = f"https://m.bilibili.com/dynamic/{dynamic_id}"
-    cookies = json.loads(Path('./bili_cookies.json').read_text("utf-8"))  # type: ignore
+
+    if config.haruka_browser_ua:
+        user_agent = config.haruka_browser_ua
+    else:
+        user_agent = ("Mozilla/5.0 (Linux; Android 11; RMX3161 Build/RKQ1.201217.003; wv) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Version/4.0 Chrome/101.0.4896.59 Mobile Safari/537.36")
+
     browser:Browser = await get_browser()
     page = await browser.new_page(
         device_scale_factor=2,
-        user_agent=(
-            "Mozilla/5.0 (Linux; Android 11; RMX3161 Build/RKQ1.201217.003; wv) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Version/4.0 Chrome/101.0.4896.59 Mobile Safari/537.36"
-        ),
+        user_agent=user_agent,
         viewport={"width": 460, "height": 780},
     )
-    await page.context.add_cookies(cookies)
+
+    if config.haruka_cookie_file:
+        cookies = json.loads(Path(config.haruka_cookie_file).read_text("utf-8"))  # type: ignore
+        await page.context.add_cookies(cookies)
+
     try:
         await page.route(re.compile("^https://static.graiax/fonts/(.+)$"), fill_font)
         await page.goto(
