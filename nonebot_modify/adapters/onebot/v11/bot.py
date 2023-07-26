@@ -35,9 +35,9 @@ async def _check_reply(bot: "Bot", event: MessageEvent) -> None:
         event.reply = Reply.parse_obj(await bot.get_msg(message_id=msg_seg.data["id"]))
     except Exception as e:
         if isinstance(e, ActionFailed) and e.info.get("msg", "") == "MSG_NOT_FOUND": # 消息不存在
-            log("WARNING", f"Error when getting message reply info: {repr(e)}")
+            log("WARNING", f"{bot.self_id} | Error when getting message reply info: {repr(e)}")
         else:
-            log("WARNING", f"Error when getting message reply info: {repr(e)}", e)
+            log("WARNING", f"{bot.self_id} | Error when getting message reply info: {repr(e)}", e)
         return
     # ensure string comparation
     if str(event.reply.sender.user_id) == str(event.self_id):
