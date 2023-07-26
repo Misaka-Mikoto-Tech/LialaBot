@@ -7,6 +7,7 @@ FrontMatter:
 
 import re
 from typing import Any, Union, Callable
+from exception import ActionFailed
 
 from nonebot.typing import overrides
 from nonebot.message import handle_event
@@ -33,7 +34,10 @@ async def _check_reply(bot: "Bot", event: MessageEvent) -> None:
     try:
         event.reply = Reply.parse_obj(await bot.get_msg(message_id=msg_seg.data["id"]))
     except Exception as e:
-        log("WARNING", f"Error when getting message reply info: {repr(e)}", e)
+        if isinstance(e, ActionFailed) and e.info.get("msg", "") == "MSG_NOT_FOUND": # 消息不存在
+            log("WARNING", f"Error when getting message reply info: {repr(e)}")
+        else:
+            log("WARNING", f"Error when getting message reply info: {repr(e)}", e)
         return
     # ensure string comparation
     if str(event.reply.sender.user_id) == str(event.self_id):
