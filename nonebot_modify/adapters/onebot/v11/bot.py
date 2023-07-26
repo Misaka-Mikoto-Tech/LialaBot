@@ -7,7 +7,7 @@ FrontMatter:
 
 import re
 from typing import Any, Union, Callable
-from exception import ActionFailed
+from nonebot.exception import ActionFailed
 
 from nonebot.typing import overrides
 from nonebot.message import handle_event
