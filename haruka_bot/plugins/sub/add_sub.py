@@ -14,7 +14,7 @@ from ...utils import (
     to_me,
     uid_check,
 )
-from .. import Bili_Auth, bili_is_logined
+from ...bili_auth import bili_auth
 
 add_sub = on_command("关注", aliases={"添加主播"}, rule=to_me(), priority=5, block=True)
 add_sub.__doc__ = """关注 UID"""
@@ -33,7 +33,7 @@ async def _(event: MessageEvent, uid: str = ArgPlainText("uid")):
     name = user and user.name
     if not name:
         try:
-            name = (await get_user_info(uid, proxies=PROXIES, auth=Bili_Auth))["name"]
+            name = (await get_user_info(uid, proxies=PROXIES, auth=bili_auth.auth))["name"]
         except ResponseCodeError as e:
             if e.code == -400 or e.code == -404:
                 await add_sub.finish("UID不存在，注意UID不是房间号")

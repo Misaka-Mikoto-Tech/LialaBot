@@ -18,12 +18,12 @@ from ... import config
 from ...database import DB as db
 from ...database import dynamic_offset as offset
 from ...utils import get_dynamic_screenshot, safe_send, scheduler
-from .. import Bili_Auth, bili_is_logined
+from ...bili_auth import bili_auth
 
 async def dy_sched():
     """动态推送"""
 
-    if not bili_is_logined:
+    if not bili_auth.is_logined:
         await asyncio.sleep(1)
         return
 
@@ -43,7 +43,7 @@ async def dy_sched():
         dynamics = (
             await grpc_get_user_dynamics(
                 uid, timeout=config.haruka_dynamic_timeout, proxy=config.haruka_proxy,
-                auth=Bili_Auth
+                auth=bili_auth.auth
             )
         ).list
     except AioRpcError as e:

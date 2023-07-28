@@ -1,8 +1,3 @@
-from bilireq.auth import Auth
-
-Bili_Auth = Auth()
-bili_is_logined: bool = False
-
 # from . import auto_agree  # noqa: F401
 from . import auto_delete  # noqa: F401
 from . import help  # noqa: F401

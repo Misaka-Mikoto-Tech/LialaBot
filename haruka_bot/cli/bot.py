@@ -12,6 +12,7 @@ driver.register_adapter(Adapter)
 app = nonebot.get_asgi()
 
 # nonebot.load_plugin('nonebot_plugin_picstatus') # 会疯狂占用cpu和内存，谨慎使用
+nonebot.load_plugin("nonebot_plugin_htmlrender")
 nonebot.load_plugin("nonebot_plugin_naturel_gpt")
 nonebot.load_plugin("nonebot_plugin_novelai")
 nonebot.load_plugin("nonebot_plugin_bilichat")

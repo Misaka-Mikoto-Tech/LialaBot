@@ -12,8 +12,8 @@ from bilireq.grpc.protos.bilibili.app.dynamic.v2.dynamic_pb2 import DynamicType
 from ..utils import on_command, to_me, text_to_img
 from ..utils.uid_extract import uid_extract
 from ..utils.bilibili_request import get_b23_url
-from ..utils import get_dynamic_screenshot, safe_send, scheduler
-from .. import Bili_Auth, bili_is_logined
+from ..utils import get_dynamic_screenshot
+from ..bili_auth import bili_auth
 
 vive = on_command("查看动态", rule=to_me(), priority=5, block=True) # 数值越小优先级越高
 vive.__doc__ = "查看动态"
@@ -31,6 +31,10 @@ async def _(
 ):
     vive_texts = arg.strip().split(' ')
     logger.info(f"接收到查询数据:{vive_texts}")
+
+    if not bili_auth.is_logined:
+        await vive.finish("未登录B站账号，请先登录")
+
     name = vive_texts[0]
     if not (uid := await uid_extract(name)):
         return await vive.send(MessageSegment.at(event.user_id) + "未找到该 UP，请输入正确的UP 名、UP UID或 UP 首页链接")
@@ -39,7 +43,8 @@ async def _(
         return await vive.send(MessageSegment.at(event.user_id) + "UP 主不存在")
 
     try:
-        res = await grpc_get_user_dynamics(int(uid), auth=Bili_Auth)
+        logger.info(f"B站Token:{bili_auth.auth}")
+        res = await grpc_get_user_dynamics(int(uid), auth=bili_auth.auth)
     except Exception as e:
         return await vive.send(MessageSegment.at(event.user_id) + f"获取动态失败：{e}")
 

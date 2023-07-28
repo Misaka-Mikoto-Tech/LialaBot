@@ -19,7 +19,6 @@ except ImportError:
 
 from .. import config
 from .fonts_provider import fill_font
-from plugins import Bili_Auth, bili_is_logined
 
 _browser: Optional[Browser] = None
 mobile_js = Path(__file__).parent.joinpath("mobile.js")
@@ -51,6 +50,8 @@ async def get_dynamic_screenshot(dynamic_id, style=config.haruka_screenshot_styl
 
 async def get_dynamic_screenshot_mobile(dynamic_id):
     """移动端动态截图"""
+    from ..bili_auth import bili_auth
+
     url = f"https://m.bilibili.com/dynamic/{dynamic_id}"
 
     if config.haruka_browser_ua:
@@ -66,8 +67,8 @@ async def get_dynamic_screenshot_mobile(dynamic_id):
         viewport={"width": 460, "height": 780},
     )
 
-    if bili_is_logined:
-        await page.context.add_cookies(Bili_Auth.cookies)
+    if bili_auth.is_logined:
+        await page.context.add_cookies(bili_auth.auth.cookies)
     elif config.haruka_cookie_file:
         cookies = json.loads(Path(config.haruka_cookie_file).read_text("utf-8"))  # type: ignore
         await page.context.add_cookies(cookies)
