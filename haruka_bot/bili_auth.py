@@ -8,7 +8,7 @@ class BiliAuth(BaseSettings):
 
     def set_auth(self, auth:Auth):
         self.auth = auth
-        self.is_logined = True
+        self.is_logined = auth != None
 
     def remove_auth(self):
         self.auth = None

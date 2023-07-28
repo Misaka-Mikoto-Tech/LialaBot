@@ -1,11 +1,14 @@
+import asyncio
 import json
 import io
-from typing import List
+import random
+from typing import List, Optional
 from pathlib import Path
 from nonebot import logger
 from nonebot.matcher import matchers
 from nonebot.adapters.onebot.v11 import Bot, MessageSegment
 from nonebot.adapters.onebot.v11.event import MessageEvent
+from apscheduler.job import Job
 
 from ..utils import on_command, to_me, text_to_img
 from ..version import __version__
@@ -45,8 +48,9 @@ async def _(event: MessageEvent, bot:Bot):
             data.save(buf, format="PNG") # PilImage
             await bili_login.send(MessageSegment.image(buf))
             
-        bili_auth.auth = await bilibili_login.qrcode_login(interval=5)
-        bili_auth.is_logined = True
+        auth_data = await bilibili_login.qrcode_login(interval=5)
+        if auth_data:
+            bili_auth.set_auth(auth_data)
         logger.success("[BiliBili推送] 二维码登录完成")
         await bili_login.send("[BiliBili推送] 二维码登录完成")
     except ResponseCodeError as e:
@@ -67,22 +71,30 @@ async def _(event: MessageEvent, bot:Bot):
         logger.error("[Bilibili推送] 登录失败")
 
 
+_on_start_job: Optional[Job] = None
+
 async def _load_login_cache():
-    """Bot启动时尝试自动登录"""
+    """尝试从配置文件中加载并自动登录"""
+    global _on_start_job
 
-    scheduler.remove_job("bili_login_sched")
+    if _on_start_job:
+        _on_start_job.remove()
+        _on_start_job = None
 
+    await asyncio.sleep(random.uniform(1, 3))
+    
     logger.info("尝试自动登录B站")
     login_cache_file = Path(config.haruka_login_cache_file)
     if login_cache_file.exists():
-        bili_auth.auth = Auth()
-        bili_auth.auth.update(json.loads(login_cache_file.read_text()))
+        auth_data = Auth()
+        auth_data.update(json.loads(login_cache_file.read_text()))
         try:
-            bili_auth.auth = await bili_auth.auth.refresh()
-            bili_auth.is_logined = True
-            login_cache_file.write_text(
-                json.dumps(dict(bili_auth.auth), indent=2, ensure_ascii=False)
-            )
+            auth_data = await auth_data.refresh()
+            if auth_data:
+                bili_auth.set_auth(auth_data)
+                login_cache_file.write_text(
+                    json.dumps(dict(auth_data), indent=2, ensure_ascii=False)
+                )
             
             logger.debug(bili_auth.auth)
             logger.success("[Bilibili推送] 缓存登录完成")
@@ -91,6 +103,11 @@ async def _load_login_cache():
     else:
         logger.error(f"[Bilibili推送] 不存在登录缓存文件, 请尝试手动登录")
 
-scheduler.add_job(
-        _load_login_cache, "interval", seconds=2, id="bili_login_sched"
+_on_start_job = scheduler.add_job(
+        _load_login_cache, "interval", seconds=1, id="bili_login_sched_on_start"
     )
+
+scheduler.add_job(
+        _load_login_cache, "interval", seconds=3 * 3600 + 200, id="bili_login_sched"
+    )
+

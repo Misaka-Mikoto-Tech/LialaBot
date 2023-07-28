@@ -26,10 +26,7 @@ def format_time_span(seconds:float)->str:
     h, m = divmod(m, 60)
     return f"{int(h)}小时{int(m)}分"
 
-@scheduler.scheduled_job(
-    "interval", seconds=config.haruka_live_interval, id="live_sched"
-)
-
+@scheduler.scheduled_job("interval", seconds=config.haruka_live_interval, id="live_sched")
 async def live_sched():
     """直播推送"""
 
