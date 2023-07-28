@@ -13,6 +13,7 @@ from ..utils import on_command, to_me, text_to_img
 from ..utils.uid_extract import uid_extract
 from ..utils.bilibili_request import get_b23_url
 from ..utils import get_dynamic_screenshot, safe_send, scheduler
+from .. import Bili_Auth, bili_is_logined
 
 vive = on_command("查看动态", rule=to_me(), priority=5, block=True) # 数值越小优先级越高
 vive.__doc__ = "查看动态"
@@ -38,7 +39,7 @@ async def _(
         return await vive.send(MessageSegment.at(event.user_id) + "UP 主不存在")
 
     try:
-        res = await grpc_get_user_dynamics(int(uid))
+        res = await grpc_get_user_dynamics(int(uid), auth=Bili_Auth)
     except Exception as e:
         return await vive.send(MessageSegment.at(event.user_id) + f"获取动态失败：{e}")
 

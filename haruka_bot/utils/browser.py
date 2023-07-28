@@ -19,6 +19,7 @@ except ImportError:
 
 from .. import config
 from .fonts_provider import fill_font
+from plugins import Bili_Auth, bili_is_logined
 
 _browser: Optional[Browser] = None
 mobile_js = Path(__file__).parent.joinpath("mobile.js")
@@ -65,7 +66,9 @@ async def get_dynamic_screenshot_mobile(dynamic_id):
         viewport={"width": 460, "height": 780},
     )
 
-    if config.haruka_cookie_file:
+    if bili_is_logined:
+        await page.context.add_cookies(Bili_Auth.cookies)
+    elif config.haruka_cookie_file:
         cookies = json.loads(Path(config.haruka_cookie_file).read_text("utf-8"))  # type: ignore
         await page.context.add_cookies(cookies)
 

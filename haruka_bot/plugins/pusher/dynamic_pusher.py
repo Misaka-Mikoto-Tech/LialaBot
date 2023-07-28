@@ -18,9 +18,15 @@ from ... import config
 from ...database import DB as db
 from ...database import dynamic_offset as offset
 from ...utils import get_dynamic_screenshot, safe_send, scheduler
+from .. import Bili_Auth, bili_is_logined
 
 async def dy_sched():
     """动态推送"""
+
+    if not bili_is_logined:
+        await asyncio.sleep(1)
+        return
+
     uid = await db.next_uid("dynamic")
     if not uid:
         # 没有订阅先暂停一秒再跳过，不然会导致 CPU 占用过高
@@ -36,7 +42,8 @@ async def dy_sched():
         # 获取 UP 最新动态列表
         dynamics = (
             await grpc_get_user_dynamics(
-                uid, timeout=config.haruka_dynamic_timeout, proxy=config.haruka_proxy
+                uid, timeout=config.haruka_dynamic_timeout, proxy=config.haruka_proxy,
+                auth=Bili_Auth
             )
         ).list
     except AioRpcError as e:

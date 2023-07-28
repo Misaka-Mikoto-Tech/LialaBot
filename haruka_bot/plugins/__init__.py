@@ -1,8 +1,14 @@
+from bilireq.auth import Auth
+
+Bili_Auth = Auth()
+bili_is_logined: bool = False
+
 # from . import auto_agree  # noqa: F401
 from . import auto_delete  # noqa: F401
 from . import help  # noqa: F401
 from . import decrease_notice  # noqa: F401
 from . import vive_dynamic  # noqa: F401
+from . import bili_login  # noqa: F401
 from .at import at_off, at_on  # noqa: F401
 from .dynamic import dynamic_off, dynamic_on  # noqa: F401
 from .live import live_off, live_on, live_tips  # noqa: F401

@@ -22,6 +22,7 @@ class Config(BaseSettings):
     haruka_command_prefix: str = ""
     haruka_browser_ua:  Optional[str] = None
     haruka_cookie_file: Optional[str] = None
+    haruka_login_cache_file: Optional[str] = "./login_cache.json"
     # 频道管理员身份组
     haruka_guild_admin_roles: List[str] = ["频道主", "超级管理员"]
     exclusive_bots:List[int] = [] # 独占模式的bot列表，只允许自己控制自己

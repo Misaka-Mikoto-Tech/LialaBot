@@ -1,3 +1,4 @@
+import asyncio
 from bilireq.live import get_rooms_info_by_uids
 from nonebot.adapters.onebot.v11.message import MessageSegment
 from nonebot.log import logger
@@ -9,6 +10,7 @@ from ...utils import PROXIES, safe_send, scheduler
 from dataclasses import dataclass, astuple
 import time
 from typing import Dict
+from .. import Bili_Auth, bili_is_logined
 
 @dataclass
 class LiveStatusData:
@@ -30,12 +32,17 @@ def format_time_span(seconds:float)->str:
 
 async def live_sched():
     """直播推送"""
+
+    if not bili_is_logined:
+        await asyncio.sleep(1)
+        return
+
     uids = await db.get_uid_list("live")
 
     if not uids:  # 订阅为空
         return
     logger.debug(f"爬取直播列表，目前开播{sum(o.status_code for o in all_status.values())}人，总共{len(uids)}人")
-    res = await get_rooms_info_by_uids(uids, reqtype="web", proxies=PROXIES)
+    res = await get_rooms_info_by_uids(uids, proxies=PROXIES, auth=Bili_Auth)
     if not res:
         return
     for uid, info in res.items():
