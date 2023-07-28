@@ -17,6 +17,7 @@ from bilireq.grpc.protos.bilibili.app.dynamic.v2.dynamic_pb2 import (
     DynDetailsReq,
     DynDetailsReply,
 )
+from typing import Any, Dict, Optional
 
 from bilireq.auth import Auth
 Bili_Auth = Auth()
@@ -89,13 +90,13 @@ async def get_b23_url(burl: str) -> str:
     return resp["content"]
 
 
-async def search_user(keyword: str):
+async def search_user(keyword: str, cookies: Optional[Dict[str, Any]] = None):
     """
     搜索用户
     """
     url = "https://api.bilibili.com/x/web-interface/search/type"
     data = {"keyword": keyword, "search_type": "bili_user"}
-    resp = (await get(url, params=data))
+    resp = (await get(url, params=data, cookies=cookies))
     logger.debug(resp)
     return resp
 

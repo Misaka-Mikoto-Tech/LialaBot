@@ -67,9 +67,10 @@ async def get_dynamic_screenshot_mobile(dynamic_id):
         viewport={"width": 460, "height": 780},
     )
 
-    if bili_auth.is_logined:
-        await page.context.add_cookies(bili_auth.auth.cookies)
-    elif config.haruka_cookie_file:
+    # if bili_auth.is_logined:
+    #     await page.context.add_cookies(bili_auth.get_cookie_array())
+    # el
+    if config.haruka_cookie_file:
         cookies = json.loads(Path(config.haruka_cookie_file).read_text("utf-8"))  # type: ignore
         await page.context.add_cookies(cookies)
 

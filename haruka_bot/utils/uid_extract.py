@@ -6,6 +6,7 @@ from typing import Union, Optional
 from ..database.db import DB as db
 from .b23_extract import b23_extract
 from .bilibili_request import search_user
+from ..bili_auth import bili_auth
 
 
 async def uid_extract(text: str)->Optional[str]:
@@ -35,7 +36,7 @@ async def uid_extract(text: str)->Optional[str]:
         if text_u != text:
             logger.debug(f"[UID Extract] Text is a Quoted Digit: {text_u}")
         logger.debug(f"[UID Extract] Searching UID in BiliBili: {text_u}")
-        resp = await search_user(text_u)
+        resp = await search_user(text_u, cookies=bili_auth.get_cookie_dict())
         logger.debug(f"[UID Extract] Search result: {resp}")
         if resp and resp["numResults"]:
             for result in resp["result"]:
